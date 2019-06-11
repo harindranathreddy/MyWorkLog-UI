@@ -1,0 +1,74 @@
+#login {
+	position: relative;
+	float: center;
+	margin-left: 30%;
+	margin-right: 30%;
+	margin-top: 10%;
+}
+
+#headerNavBar {
+	background-color: #0747a6 !important;
+}
+
+body {
+	background-color: white !important;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+#signInBtn {
+	width: 100%
+}
+
+:required:invalid {
+	background: #ffc107;
+}
+
+#dashboard{
+	padding-bottom : 4%;
+}
+
+#details {
+	width: -webkit-fill-available;
+}
+
+#key {
+	
+}
+
+#summery {
+	
+}
+
+#status {
+	
+}
+
+#type {
+	
+}
+
+#workLog {
+	width: auto;
+	text-align: center;
+	margin-left: 1%;
+	margin-bottom: 1%;
+}
+
+#workLogs {
+	
+}
+
+#workHours {
+	margin-bottom: 1%;
+	margin-top: 1%;
+}
+
+#comment {
+	margin-top: 1%;
+}
+
+#footer {
+	display: none;
+}
