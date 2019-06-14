@@ -1,0 +1,52 @@
+@charset "ISO-8859-1";
+#details {
+	width: -webkit-fill-available;
+}
+
+#key {
+	
+}
+
+#summery {
+	
+}
+
+#status {
+	
+}
+
+#type {
+	
+}
+
+#workLog {
+	width: auto;
+	text-align: center;
+	margin-left: 1%;
+	margin-bottom: 1%;
+}
+
+#workLogs {
+	
+}
+
+#workHours {
+	margin-bottom: 1%;
+	margin-top: 1%;
+}
+
+#comment {
+	margin-top: 1%;
+}
+
+#addJiraComponent{
+	width : auto;
+}
+
+#dashboard{
+	padding-bottom : 15%;
+}
+
+/* #jira{
+	background-color : #D9D9D9;
+} */

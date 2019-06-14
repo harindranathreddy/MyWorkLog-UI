@@ -25,50 +25,14 @@ body {
 	background: #ffc107;
 }
 
-#dashboard{
-	padding-bottom : 4%;
-}
-
-#details {
-	width: -webkit-fill-available;
-}
-
-#key {
-	
-}
-
-#summery {
-	
-}
-
-#status {
-	
-}
-
-#type {
-	
-}
-
-#workLog {
-	width: auto;
-	text-align: center;
-	margin-left: 1%;
-	margin-bottom: 1%;
-}
-
-#workLogs {
-	
-}
-
-#workHours {
-	margin-bottom: 1%;
-	margin-top: 1%;
-}
-
-#comment {
-	margin-top: 1%;
-}
-
 #footer {
 	display: none;
 }
+
+/* #fmheader{
+	color : #182930;
+}
+
+#userIdDisplay{
+	color : #182930;
+} */

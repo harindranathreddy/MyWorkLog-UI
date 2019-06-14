@@ -46,3 +46,26 @@ function displayWarningWithId(message, divId) {
 		document.getElementById("response").style.display = 'none';
 	}, 3000);
 }
+
+function updateProgressBar(per){
+	document.getElementsByClassName("progress-bar")[0].style.width = per;
+}
+
+function clearProgressBar(){
+	document.getElementById("footer").style.display = "block";
+	setTimeout(function() {
+		document.getElementsByClassName("progress-bar")[0].style.width = "0%";
+		document.getElementsByClassName("progress-bar bg-danger")[0].style.width = "0%";
+	}, 3000);
+}
+
+function clearProgressBarWithOutFooter(){
+	setTimeout(function() {
+		document.getElementsByClassName("progress-bar")[0].style.width = "0%";
+		document.getElementsByClassName("progress-bar bg-danger")[0].style.width = "0%";
+	}, 3000);
+}
+
+function updateProgressBarWithError(per){
+	document.getElementsByClassName("progress-bar bg-danger")[0].style.width = per;
+}
