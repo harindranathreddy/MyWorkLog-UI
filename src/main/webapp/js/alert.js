@@ -57,6 +57,7 @@ function clearProgressBar(){
 		document.getElementsByClassName("progress-bar")[0].style.width = "0%";
 		document.getElementsByClassName("progress-bar bg-danger")[0].style.width = "0%";
 	}, 3000);
+	$("#loader").fadeOut("slow");
 }
 
 function clearProgressBarWithOutFooter(){
@@ -64,6 +65,7 @@ function clearProgressBarWithOutFooter(){
 		document.getElementsByClassName("progress-bar")[0].style.width = "0%";
 		document.getElementsByClassName("progress-bar bg-danger")[0].style.width = "0%";
 	}, 3000);
+	$("#loader").fadeOut("slow");
 }
 
 function updateProgressBarWithError(per){

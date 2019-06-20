@@ -47,6 +47,12 @@
 	padding-bottom : 15%;
 }
 
+.addWorkLog{
+	width : 16px;
+	height : 16px;
+	margin : 5px;
+}
+
 /* #jira{
 	background-color : #D9D9D9;
 } */

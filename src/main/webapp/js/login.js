@@ -3,17 +3,14 @@ function validateLogin() {
 	var userId = document.getElementById("userId").value;
 	var password = document.getElementById("userPassword").value;
 	if (userId && password) {
-		login(userId, password);
+		login(userId, btoa(password));
 	} else {
 		displayWarning("Fill all the details");
 	}
 }
 
-$(window).load(function() {
-	$(".loader").fadeOut("slow");
-});
-
 function login(userId, password) {
+	document.getElementById("loader").style.display = "block";
 	var data = "userName=" + userId + "&password=" + password;
 	var xhr = new XMLHttpRequest();
 	xhr.onload = function() {
@@ -23,11 +20,14 @@ function login(userId, password) {
 			if (response && response.responseCode === 'L01') {
 				updateProgressBar("10%");
 				displayDetails(userId, password);
+				var headers = xhr.getAllResponseHeaders();
 			} else {
 				displayError(response.responseMessage);
+				clearProgressBarWithOutFooter();
 			}
 		} else {
 			displayError(response.responseMessage);
+			clearProgressBarWithOutFooter();
 		}
 	};
 	xhr.onerror = function(e) {
@@ -42,10 +42,10 @@ function login(userId, password) {
 }
 
 document.addEventListener("DOMContentLoaded", function(event) {
-	var cookie = document.cookie;
+	//var cookie = document.cookie;
 	if (sessionStorage.getItem("user") && sessionStorage.getItem("key")) {
 		var user = sessionStorage.getItem("user");
-		var password = atob(sessionStorage.getItem("key"));
+		var password = sessionStorage.getItem("key");
 		login(user, password);
 	}
 });
