@@ -59,6 +59,7 @@ function loadJiraDetails(jiraDetailsList) {
 			addWorkLogDay.classList.add("addWorkLog")
 			addWorkLogDay.setAttribute("src", "./images/add.png");
 			addWorkLogDay.setAttribute("alt", "Add WorkLog");
+			addWorkLogDay.setAttribute("title", "Add WorkLog");
 			addWorkLogDay.setAttribute("onClick","addWorkLogDay(this.parentNode.parentNode)");
 			jiraControls.appendChild(addWorkLogDay);
 			var cross = document.createElement("button");
@@ -72,33 +73,33 @@ function loadJiraDetails(jiraDetailsList) {
 			jira.appendChild(jiraControls);
 			var details = document.createElement("div");
 			details.id = "details";
-			details.classList.add("card-body");
-			details.classList.add("row");
+			//details.classList.add("card-body");
+			//details.classList.add("row");
 			jira.appendChild(details);
 			var key = document.createElement("div");
 			key.id = "key";
-			key.innerHTML = "<b>Jira: </b>" + jiraDetails.id;
-			key.classList.add("card-title");
-			key.classList.add("col");
+			key.innerHTML = "<b>Jira: </b><a href="+jiraDetails.jiraLink+" target='_blank' class='card-link'>" + jiraDetails.id + "</a>";
+			//key.classList.add("card-title");
+			//key.classList.add("col");
 			details.appendChild(key);
-			var summery = document.createElement("div");
-			summery.id = "summary";
-			summery.innerHTML = "<b>Summary: </b>" + jiraDetails.summery;
-			summery.classList.add("card-text");
-			summery.classList.add("col-md");
-			details.appendChild(summery);
 			var status = document.createElement("div");
 			status.id = "status";
-			status.classList.add("card-text");
-			status.classList.add("col");
-			status.innerHTML = "<b>Status: </b>" + jiraDetails.status;
+			//status.classList.add("card-text");
+			//status.classList.add("col");
+			status.innerHTML = "<b>Status: </b><img src = "+ jiraDetails.statusIcon +"> "+ jiraDetails.status;
 			details.appendChild(status);
 			var type = document.createElement("div");
 			type.id = "type";
-			type.innerHTML = "<b>Type: </b>" + jiraDetails.type;
-			type.classList.add("card-text");
-			type.classList.add("col");
+			type.innerHTML = "<b>Type: </b><img src = "+ jiraDetails.issueIcon +"> " + jiraDetails.type;
+			//type.classList.add("card-text");
+			//type.classList.add("col");
 			details.appendChild(type);
+			var summery = document.createElement("div");
+			summery.id = "summary";
+			summery.innerHTML = "<b>Summary: </b>" + jiraDetails.summery;
+			//summery.classList.add("card-text");
+			//summery.classList.add("row");
+			details.appendChild(summery);
 			var workLogs = document.createElement("div");
 			workLogs.id = "workLogs";
 			workLogs.classList.add("row");
@@ -106,8 +107,10 @@ function loadJiraDetails(jiraDetailsList) {
 			document.getElementById("dashboard").appendChild(jira);
 			var unLoggedDates = getUnLoggedDates(jiraDetails.lastLoggedDate,workLogs,addWorkLogComponent);
 			
+		} 
+		if(jiraDetailsList.length == 0){
+			displayInfo("No cards assigned to you.");
 		}
-		document.getElementById("dashboard").appendChild(jira);
 		document.getElementById("logWork").classList.remove("disabled");
 		updateProgressBar("100%");
 		clearProgressBar();
@@ -292,7 +295,7 @@ function logWorkInJira(logs) {
 				removeLoggedDates();
 			} else {
 				updateProgressBarWithError("100%");
-				displayWarning(response.responseMessage);
+				displayError(response.responseMessage);
 			}
 		} else if (400 === this.status) {
 			var response = JSON.parse(this.responseText);

@@ -4,7 +4,7 @@ function displayWarning(message) {
 			+ message + "</div>";
 	setTimeout(function() {
 		document.getElementById("response").style.display = 'none';
-	}, 3000);
+	}, 10000);
 }
 
 function displayInfo(message) {
@@ -13,7 +13,7 @@ function displayInfo(message) {
 			+ message + "</div>";
 	setTimeout(function() {
 		document.getElementById("response").style.display = 'none';
-	}, 3000);
+	}, 10000);
 }
 
 function displayError(message) {
@@ -22,7 +22,7 @@ function displayError(message) {
 			+ message + "</div>";
 	setTimeout(function() {
 		document.getElementById("response").style.display = 'none';
-	}, 3000);
+	}, 10000);
 }
 
 function displaySuccessMessage(message) {
@@ -31,7 +31,7 @@ function displaySuccessMessage(message) {
 			+ message + "</div>";
 	setTimeout(function() {
 		document.getElementById("response").style.display = 'none';
-	}, 3000);
+	}, 10000);
 }
 
 function clearResponse() {
@@ -44,7 +44,7 @@ function displayWarningWithId(message, divId) {
 			+ message + "</div>";
 	setTimeout(function() {
 		document.getElementById("response").style.display = 'none';
-	}, 3000);
+	}, 10000);
 }
 
 function updateProgressBar(per){
