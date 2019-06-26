@@ -1,11 +1,12 @@
 function displayDetails(user, password) {
 	sessionStorage.setItem("user", user);
 	sessionStorage.setItem("key", password);
-	/*var now = new Date();
-    var minutes = 30;
-    now.setTime(now.getTime() + (minutes * 60 * 1000));
-	document.cookie = "user = "+user+";expires="+now.toString();
-	document.cookie = "key = "+password+";expires="+now.toString();*/
+	/*
+	 * var now = new Date(); var minutes = 30; now.setTime(now.getTime() +
+	 * (minutes * 60 * 1000)); document.cookie = "user =
+	 * "+user+";expires="+now.toString(); document.cookie = "key =
+	 * "+password+";expires="+now.toString();
+	 */
 	updateProgressBar("10%");
 	modifyScreenContent(user);
 }
@@ -58,8 +59,8 @@ function loadJiraDetails(jiraDetailsList) {
 			var addWorkLogDay = document.createElement("IMG");
 			addWorkLogDay.classList.add("addWorkLog")
 			addWorkLogDay.setAttribute("src", "./images/add.png");
-			addWorkLogDay.setAttribute("alt", "Add WorkLog");
-			addWorkLogDay.setAttribute("title", "Add WorkLog");
+			addWorkLogDay.setAttribute("alt", "Add New Day");
+			addWorkLogDay.setAttribute("title", "Add New Day");
 			addWorkLogDay.setAttribute("onClick","addWorkLogDay(this.parentNode.parentNode)");
 			jiraControls.appendChild(addWorkLogDay);
 			var cross = document.createElement("button");
@@ -73,32 +74,32 @@ function loadJiraDetails(jiraDetailsList) {
 			jira.appendChild(jiraControls);
 			var details = document.createElement("div");
 			details.id = "details";
-			//details.classList.add("card-body");
-			//details.classList.add("row");
+			// details.classList.add("card-body");
+			// details.classList.add("row");
 			jira.appendChild(details);
 			var key = document.createElement("div");
 			key.id = "key";
 			key.innerHTML = "<b>Jira: </b><a href="+jiraDetails.jiraLink+" target='_blank' class='card-link'>" + jiraDetails.id + "</a>";
-			//key.classList.add("card-title");
-			//key.classList.add("col");
+			// key.classList.add("card-title");
+			// key.classList.add("col");
 			details.appendChild(key);
 			var status = document.createElement("div");
 			status.id = "status";
-			//status.classList.add("card-text");
-			//status.classList.add("col");
+			// status.classList.add("card-text");
+			// status.classList.add("col");
 			status.innerHTML = "<b>Status: </b><img src = "+ jiraDetails.statusIcon +"> "+ jiraDetails.status;
 			details.appendChild(status);
 			var type = document.createElement("div");
 			type.id = "type";
 			type.innerHTML = "<b>Type: </b><img src = "+ jiraDetails.issueIcon +"> " + jiraDetails.type;
-			//type.classList.add("card-text");
-			//type.classList.add("col");
+			// type.classList.add("card-text");
+			// type.classList.add("col");
 			details.appendChild(type);
 			var summery = document.createElement("div");
 			summery.id = "summary";
 			summery.innerHTML = "<b>Summary: </b>" + jiraDetails.summery;
-			//summery.classList.add("card-text");
-			//summery.classList.add("row");
+			// summery.classList.add("card-text");
+			// summery.classList.add("row");
 			details.appendChild(summery);
 			var workLogs = document.createElement("div");
 			workLogs.id = "workLogs";
@@ -395,7 +396,17 @@ function addWorkLogDay(jiraComponent){
 	var xhr = new XMLHttpRequest();
 	xhr.onload = function() {
 		var response = this.responseXML;
+		if(jiraComponent.childNodes[2].lastChild.classList.contains('alert')){
+			jiraComponent.childNodes[2].removeChild(jiraComponent.childNodes[2].lastChild);
+		}
 		jiraComponent.childNodes[2].appendChild(response.getElementById("workLog"));
+		var currentdate = new Date()
+		var month = parseInt(currentdate.getMonth()+1);
+		if(month < 10){
+			month = "0" + month;
+		}
+		var maxdate = currentdate.getFullYear() +"-"+ month + "-"+currentdate.getDate();
+		jiraComponent.getElementsByClassName("workLog")[jiraComponent.getElementsByClassName("workLog").length-1].firstElementChild.setAttribute("max",maxdate+"T23:59");
 	};
 	xhr.open("GET", "./html/WorkLog.html", true);
 	xhr.responseType = "document";
