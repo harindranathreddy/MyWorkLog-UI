@@ -6,6 +6,8 @@ function validateLogin() {
 		login(userId, btoa(password));
 	} else {
 		displayWarning("Fill all the details");
+		updateProgressBarWithError("100%");
+		clearProgressBar();
 	}
 }
 
@@ -59,3 +61,9 @@ function clearScreen() {
 	document.getElementById("body").removeChild(
 			document.getElementById("login"));
 }
+
+document.addEventListener("keyup", function(event) {
+  if (event.keyCode === 13) {
+    document.getElementById("signInBtn").click();
+  }
+});

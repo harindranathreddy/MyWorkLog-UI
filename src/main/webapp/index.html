@@ -20,24 +20,29 @@
 <meta name="viewport"
 	content="width=device-width,height=device-height, initial-scale=1.0, shrink-to-fit=yes">
 <META HTTP-EQUIV="CONTENT-LANGUAGE" CONTENT="en-US">
+<link rel="icon" type="image/png" href="images/letter-w.png"
+	sizes="32x32" />
 <link rel="stylesheet" href="css/index.css">
 <link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/workLog.css">
 <script src="js/login.js"></script>
 <script src="js/alert.js"></script>
 <script src="js/dashboard.js"></script>
+<script src="js/logSummary.js"></script>
 <title>My WorkLog</title>
 </head>
 <body>
-	<header id="header" class="navbar-fixed-top sticky-top">
-		<nav class="navbar navbar-dark bg-dark" id="headerNavBar">
-			
-			<span class="navbar-brand mb-0 h1 " id="fmheader"><img id = "cernereLogo" src="images/Cerner_RGB_Standard_ horizontal.png" class="d-inline-block align-top" alt = "Cerner's Logo"/>My WorkLog
-			</span>
-		</nav>
-	</header>
 	<div id="loader">
 		<img src="images/loader.gif" />
 	</div>
+	<header id="header" class="navbar-fixed-top sticky-top">
+		<nav class="navbar navbar-dark bg-dark" id="headerNavBar">
+
+			<span class="navbar-brand mb-0 h1 " id="fmheader"><img
+				id="cernereLogo" src="images/Cerner_RGB_Standard_ horizontal.png"
+				class="d-inline-block align-top" alt="Cerner's Logo" />My WorkLog </span>
+		</nav>
+	</header>
 	<div id="body">
 		<div id="login">
 			<h4>Login Using Cerner SignOn</h4>
@@ -66,10 +71,10 @@
 				role="progressbar" style="width: 0%" aria-valuenow="0"
 				aria-valuemin="0" aria-valuemax="100"></div>
 		</div>
-		<header id="footer" class="navbar-fixed-bottom">
+		<footer id="footer" class="navbar-fixed-bottom">
 			<nav class="navbar navbar-light bg-light" id="footerNavBar">
-				<button type="button" class="btn btn-outline-primary disabled"
-					id="logWork" onClick="logWork()">Log Work Hours</button>
+				<button type="button" class="btn btn-outline-primary" id="logWork"
+					onClick="logWork()">Log Work Hours</button>
 				<div class="input-group" id="addJiraComponent">
 					<input type="text" class="form-control"
 						placeholder="Enter Jira Number" id="addJiraInput"
@@ -82,7 +87,7 @@
 				<button type="button" class="btn btn-outline-danger" id="logWork"
 					onClick="logOut()">LogOut</button>
 			</nav>
-		</header>
+		</footer>
 	</div>
 </body>
 </html>

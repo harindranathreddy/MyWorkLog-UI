@@ -18,5 +18,7 @@
 	</dependencies>
 	<build>
 		<finalName>userinterface</finalName>
+		<plugins>
+		</plugins>
 	</build>
 </project>

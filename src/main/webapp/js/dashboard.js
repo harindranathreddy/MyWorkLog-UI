@@ -1,6 +1,9 @@
+var userId = "";
+
 function displayDetails(user, password) {
 	sessionStorage.setItem("user", user);
 	sessionStorage.setItem("key", password);
+	userId = user;
 	/*
 	 * var now = new Date(); var minutes = 30; now.setTime(now.getTime() +
 	 * (minutes * 60 * 1000)); document.cookie = "user =
@@ -18,6 +21,21 @@ function modifyScreenContent(user) {
 	dashboard.classList.add("list-group");
 	dashboard.classList.add("list-group-flush");
 	document.getElementById("body").appendChild(dashboard);
+	/*var myJira = document.createElement("span");
+	myJira.id = "myJira";
+	myJira.classList.add("navbar-text");
+	myJira.classList.add("nav-item");
+	myJira.classList.add("nav-link");
+	myJira.classList.add("active");
+	myJira.innerHTML = "My Jira";
+	document.getElementById("headerNavBar").appendChild(myJira);
+	var summary = document.createElement("span");
+	summary.id = "summary";
+	summary.classList.add("navbar-text");
+	summary.classList.add("nav-item");
+	summary.classList.add("nav-link");
+	summary.innerHTML = "Summary";
+	document.getElementById("headerNavBar").appendChild(summary);*/
 	var userIdDisplay = document.createElement("span");
 	userIdDisplay.id = "userIdDisplay";
 	userIdDisplay.classList.add("navbar-text");
@@ -74,32 +92,22 @@ function loadJiraDetails(jiraDetailsList) {
 			jira.appendChild(jiraControls);
 			var details = document.createElement("div");
 			details.id = "details";
-			// details.classList.add("card-body");
-			// details.classList.add("row");
 			jira.appendChild(details);
 			var key = document.createElement("div");
 			key.id = "key";
-			key.innerHTML = "<b>Jira: </b><a href="+jiraDetails.jiraLink+" target='_blank' class='card-link'>" + jiraDetails.id + "</a>";
-			// key.classList.add("card-title");
-			// key.classList.add("col");
+			key.innerHTML = "<strong>Jira: </strong><a href="+jiraDetails.jiraLink+" target='_blank' class='card-link'>" + jiraDetails.id + "</a>";
 			details.appendChild(key);
 			var status = document.createElement("div");
 			status.id = "status";
-			// status.classList.add("card-text");
-			// status.classList.add("col");
-			status.innerHTML = "<b>Status: </b><img src = "+ jiraDetails.statusIcon +"> "+ jiraDetails.status;
+			status.innerHTML = "<strong>Status: </strong><img src = "+ jiraDetails.statusIcon +"> "+ jiraDetails.status;
 			details.appendChild(status);
 			var type = document.createElement("div");
 			type.id = "type";
-			type.innerHTML = "<b>Type: </b><img src = "+ jiraDetails.issueIcon +"> " + jiraDetails.type;
-			// type.classList.add("card-text");
-			// type.classList.add("col");
+			type.innerHTML = "<strong>Type: </strong><img src = "+ jiraDetails.issueIcon +"> " + jiraDetails.type;
 			details.appendChild(type);
 			var summery = document.createElement("div");
 			summery.id = "summary";
-			summery.innerHTML = "<b>Summary: </b>" + jiraDetails.summery;
-			// summery.classList.add("card-text");
-			// summery.classList.add("row");
+			summery.innerHTML = "<strong>Summary: </strong>" + jiraDetails.summery;
 			details.appendChild(summery);
 			var workLogs = document.createElement("div");
 			workLogs.id = "workLogs";
@@ -139,7 +147,7 @@ function addWorkLogComponent(workLogs,dates){
 			var date = document.createElement("div");
 			date.id = "date";
 			date.classList.add("card-header");
-			date.innerHTML = "<b>" + new Date().toDateString() + "</b>";
+			date.innerHTML = "<strong>" + new Date().toDateString() + "</strong>";
 			workLog.appendChild(date);
 			var workHours = document.createElement("input");
 			workHours.id = "workHours";
@@ -170,7 +178,7 @@ function addWorkLogComponent(workLogs,dates){
 				var date = document.createElement("div");
 				date.id = "date";
 				date.classList.add("card-header");
-				date.innerHTML = "<b>" + new Date(datesArray[datesArray.length-1]).toDateString() + "</b>";
+				date.innerHTML = "<strong>" + new Date(datesArray[datesArray.length-1]).toDateString() + "</strong>";
 				workLog.appendChild(date);
 				var workHours = document.createElement("input");
 				workHours.id = "workHours";
@@ -200,7 +208,7 @@ function addWorkLogComponent(workLogs,dates){
 					var date = document.createElement("div");
 					date.id = "date";
 					date.classList.add("card-header");
-					date.innerHTML = "<b>" + new Date(datesArray[i]).toDateString() + "</b>";
+					date.innerHTML = "<strong>" + new Date(datesArray[i]).toDateString() + "</strong>";
 					workLog.appendChild(date);
 					var workHours = document.createElement("input");
 					workHours.id = "workHours";
@@ -245,7 +253,7 @@ function logWork() {
 	}
 	updateProgressBar("25%");
 	if (logs.worklogs.length > 0) {
-		logWorkInJira(logs);
+		verifyLoggedWork(logs);
 	} else {
 		displayWarning("Please input timelog before submit.");
 		updateProgressBarWithError("100%");
@@ -271,7 +279,7 @@ function getWorkLog(jira) {
 				workLog.timeSpent = jira.lastElementChild.childNodes[i].childNodes[1].value;
 				workLog.comment = jira.lastElementChild.childNodes[i].childNodes[2].value;
 			}else{
-				workLog.started = jira.lastElementChild.childNodes[i].childNodes[0].nextElementSibling.value+":00.000-0500";
+				workLog.started = jira.lastElementChild.childNodes[i].childNodes[0].nextElementSibling.value+"T09:00:00.000-0500";
 				workLog.timeSpent = jira.lastElementChild.children[i].children[1].value;
 				workLog.comment = jira.lastElementChild.children[i].children[2].value;
 			}
@@ -284,17 +292,17 @@ function getWorkLog(jira) {
 	return null;
 }
 
-function logWorkInJira(logs) {
+function verifyLoggedWork(logs) {
 	updateProgressBar("40%");
 	var xhr = new XMLHttpRequest();
 	xhr.onload = function() {
 		if (200 === this.status) {
 			updateProgressBar("100%");
 			var response = JSON.parse(this.responseText);
-			if (response && response.responseCode === 'W01') {
-				displaySuccessMessage(response.responseMessage);
-				removeLoggedDates();
-			} else {
+			if(response && response.responseCode === 'WLV02'){
+				updateProgressBar("100%");
+				diplayLogSummaryPopup(logs,response.responseData);
+			}else {
 				updateProgressBarWithError("100%");
 				displayError(response.responseMessage);
 			}
@@ -307,16 +315,14 @@ function logWorkInJira(logs) {
 			displayError("Error occured. Please try after sometime");
 		}
 		clearProgressBar();
-		$("#loader").fadeOut("slow");
 	};
 	xhr.onerror = function(e) {
 		updateProgressBarWithError("100%");
 		displayError("Unknown Error Occured. Server response not received. Please contact Administrator.");
 		clearProgressBarWithOutFooter();
-		$("#loader").fadeOut("slow");
 	};
 	xhr.open("POST", "http://" + window.location.hostname
-			+ ":8090/taskmanagement/details/addWorkLog", true);
+			+ ":8090/taskmanagement/details/getWorkLogVerificationSummary", true);
 	xhr.setRequestHeader("Content-Type", "application/json");
 	updateProgressBar("60%");
 	xhr.send(JSON.stringify(logs));
@@ -325,6 +331,7 @@ function logWorkInJira(logs) {
 function getUnLoggedDates(lastLoggedDates,workLogs,callback){
 	if(lastLoggedDates === "0"){
 		callback(workLogs,null);
+		return;
 	}
 	var data = "lastLoggedDate=" + lastLoggedDates;
 	var xhr = new XMLHttpRequest();
@@ -334,12 +341,8 @@ function getUnLoggedDates(lastLoggedDates,workLogs,callback){
 			if(response.responseData !== null && response.responseCode === "D01"){
 				callback(workLogs,response.responseData.toString());
 			}else if(response.responseCode === "D02"){
-				document.getElementById("body").removeChild(
-						document.getElementById("workLog"));
 				callback(workLogs,[]);
 			}else{
-				document.getElementById("body").removeChild(
-						document.getElementById("workLog"));
 				callback(workLogs,null);
 			}
 		}
@@ -354,7 +357,7 @@ function addSearchedJira(){
 	if(jiraId !== ""){
 		document.getElementById("loader").style.display = "block";
 		document.getElementsByClassName("progress-bar")[0].style.width = "10%";
-		var data = "issueKey=" + jiraId;
+		var data = "issueKey=" + jiraId + "&userId=" + userId;
 		var xhr = new XMLHttpRequest();
 		xhr.onload = function() {
 			var response = JSON.parse(this.responseText);
@@ -405,7 +408,11 @@ function addWorkLogDay(jiraComponent){
 		if(month < 10){
 			month = "0" + month;
 		}
-		var maxdate = currentdate.getFullYear() +"-"+ month + "-"+currentdate.getDate();
+		var date = parseInt(currentdate.getDate());
+		if(date < 10){
+			date = "0" + date;
+		}
+		var maxdate = currentdate.getFullYear() +"-"+ month + "-"+date;
 		jiraComponent.getElementsByClassName("workLog")[jiraComponent.getElementsByClassName("workLog").length-1].firstElementChild.setAttribute("max",maxdate+"T23:59");
 	};
 	xhr.open("GET", "./html/WorkLog.html", true);
