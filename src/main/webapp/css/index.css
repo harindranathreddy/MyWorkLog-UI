@@ -29,13 +29,6 @@ body {
 	display: none;
 }
 
-/* #fmheader{
-	color : #182930;
-}
-
-#userIdDisplay{
-	color : #182930;
-} */
 #loader {
 	z-index: 2;
 	
@@ -51,7 +44,7 @@ body {
 	margin: auto;
 	text-align:center;
 	
-	background-color: rgba(255,255,255,0.7);
+	background-color: rgba(255,255,255,0.5);
 	display : none;
     
 }
@@ -60,5 +53,9 @@ body {
 	height : 30px;
 	padding-right: 2px;
 	margin-top: -2px;
+}
+
+#response{
+	text-align:center;
 }
 

@@ -13,7 +13,10 @@ function validateLogin() {
 
 function login(userId, password) {
 	document.getElementById("loader").style.display = "block";
-	var data = "userName=" + userId + "&password=" + password;
+	var data = {
+		username : userId,
+		password : password
+	}
 	var xhr = new XMLHttpRequest();
 	xhr.onload = function() {
 		var response = JSON.parse(this.responseText);
@@ -37,14 +40,15 @@ function login(userId, password) {
 		displayError("Unknown Error Occured. Server response not received. Please contact Administrator.");
 		clearProgressBarWithOutFooter();
 	};
-	xhr.open("GET", "http://" + window.location.hostname
-			+ ":8090/taskmanagement/authentication/authUser?" + data, true);
-	xhr.send();
+	xhr.open("POST", "http://" + window.location.hostname
+			+ ":8090/taskmanagement/authentication/authUser", true);
+	xhr.setRequestHeader("Content-Type", "application/json");
+	xhr.send(JSON.stringify(data));
 
 }
 
 document.addEventListener("DOMContentLoaded", function(event) {
-	//var cookie = document.cookie;
+	// var cookie = document.cookie;
 	if (sessionStorage.getItem("user") && sessionStorage.getItem("key")) {
 		var user = sessionStorage.getItem("user");
 		var password = sessionStorage.getItem("key");
@@ -63,7 +67,7 @@ function clearScreen() {
 }
 
 document.addEventListener("keyup", function(event) {
-  if (event.keyCode === 13) {
-    document.getElementById("signInBtn").click();
-  }
+	if (event.keyCode === 13) {
+		document.getElementById("signInBtn").click();
+	}
 });

@@ -21,21 +21,24 @@ function modifyScreenContent(user) {
 	dashboard.classList.add("list-group");
 	dashboard.classList.add("list-group-flush");
 	document.getElementById("body").appendChild(dashboard);
-	/*var myJira = document.createElement("span");
-	myJira.id = "myJira";
-	myJira.classList.add("navbar-text");
-	myJira.classList.add("nav-item");
-	myJira.classList.add("nav-link");
+	var navBarLinks = document.createElement("div");
+	navBarLinks.id = "navBarLinks";
+	document.getElementById("headerNavBar").appendChild(navBarLinks);
+	var myJira = document.createElement("button");
+	myJira.id = "myJiraLink";
+	myJira.classList.add("btn");
+	myJira.classList.add("btn-link");
 	myJira.classList.add("active");
+	myJira.setAttribute("onClick","onMyJiraLinkClick()");
 	myJira.innerHTML = "My Jira";
-	document.getElementById("headerNavBar").appendChild(myJira);
-	var summary = document.createElement("span");
-	summary.id = "summary";
-	summary.classList.add("navbar-text");
-	summary.classList.add("nav-item");
-	summary.classList.add("nav-link");
+	navBarLinks.appendChild(myJira);
+	var summary = document.createElement("button");
+	summary.id = "summaryLink";
+	summary.classList.add("btn");
+	summary.classList.add("btn-link");
+	summary.setAttribute("onClick","onSummaryLinkClick()");
 	summary.innerHTML = "Summary";
-	document.getElementById("headerNavBar").appendChild(summary);*/
+	navBarLinks.appendChild(summary);
 	var userIdDisplay = document.createElement("span");
 	userIdDisplay.id = "userIdDisplay";
 	userIdDisplay.classList.add("navbar-text");
@@ -418,4 +421,13 @@ function addWorkLogDay(jiraComponent){
 	xhr.open("GET", "./html/WorkLog.html", true);
 	xhr.responseType = "document";
 	xhr.send();
+}
+
+function onMyJiraLinkClick(){
+	if(document.getElementById("userSummary"))
+	document.getElementById("body").removeChild(
+			document.getElementById("userSummary"));
+	document.getElementById("dashboard").style.display = "block";
+	document.getElementById("addJiraComponent").removeAttribute("style");
+	document.getElementById("logWork").removeAttribute("disabled");
 }

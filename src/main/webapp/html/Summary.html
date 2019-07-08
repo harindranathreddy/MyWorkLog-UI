@@ -1,0 +1,29 @@
+<div id="userSummary">
+	<div id="summaryConfig">
+		<div class="input-group" id="inputDays">
+			<input type="number" class="form-control" id="noOfDays"
+				placeholder="Enter Number of Days (Ex: 7)" min=0>
+			<div class="input-group-append">
+				<span class="input-group-text">Days</span>
+			</div>
+		</div>
+		<button type="button" class="btn btn-secondary"
+			onClick="loadSummaryOnClick()">Get Summary</button>
+	</div>
+	<h5 id="summaryDaysHeading">Summary for 7 day(s)</h5>
+	<div id="summaryTableDiv">
+		<table class="table table-bordered" id="summaryTable">
+			<thead id="summaryTableHead">
+				<tr>
+					<th colspan="3">Jira Summary Details</th>
+				</tr>
+			</thead>
+			<tbody id="summaryTableBody">
+
+			</tbody>
+		</table>
+	</div>
+	<div id="summaryChart">
+		<canvas id="userSummaryChart" width = "800" height = "300"> </canvas>
+	</div>
+</div>

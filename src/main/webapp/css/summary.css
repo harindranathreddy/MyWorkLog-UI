@@ -1,0 +1,60 @@
+@charset "ISO-8859-1";
+
+
+#userSummary{
+	padding-bottom: 15%;
+}
+
+#inputDays {
+	padding-right: 2%;
+}
+
+#summaryConfig {
+	display: -webkit-inline-box;
+	width: 40%;
+	margin-left: 25%;
+	margin-right: 25%;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+#summaryTableDiv {
+	width: 90%;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+
+#summaryTableHead tr{
+	text-align : -webkit-center;
+	background-color : #808080;
+}
+
+.jiraSummaryRow{
+	background-color: #c0c0c0;
+}
+
+.jiraId{
+	white-space: nowrap;
+}
+
+.date{
+	white-space: nowrap;
+}
+
+.totalWorkHours{
+	white-space: nowrap;
+}
+
+#summaryChart{
+	width: 90%;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+
+
+#userSummaryChart{
+}
+
+#summaryDaysHeading{
+	text-align : center;
+}
