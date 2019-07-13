@@ -24,7 +24,7 @@ function login(userId, password) {
 			clearScreen();
 			if (response && response.responseCode === 'L01') {
 				updateProgressBar("10%");
-				displayDetails(userId, password);
+				displayDetails(password,response.responseData);
 				var headers = xhr.getAllResponseHeaders();
 			} else {
 				displayError(response.responseMessage);

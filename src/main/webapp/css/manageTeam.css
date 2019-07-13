@@ -1,0 +1,18 @@
+#manageTeam{
+	width: 80%;
+	margin-left: 10%;
+	margin-right: 10%;
+	padding-bottom: 15%;
+}
+
+#addTeam{
+	margin-top : 15px;	
+}
+
+.addTeamInput{
+	width: 80%;
+}
+
+.addTeamButton{
+	width: 20%;
+}

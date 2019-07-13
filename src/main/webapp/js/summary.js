@@ -1,11 +1,20 @@
 function onSummaryLinkClick() {
-	document.getElementById("loader").style.display = "block";
-	document.getElementById("addJiraComponent").style.display = "none";
-	//document.getElementById("logWork").style.display = "none";
-	document.getElementById("logWork").setAttribute("disabled", "");
-	var dashboard = document.getElementById("dashboard");
-	localStorage['dashboard'] = dashboard;
-	getSummaryComponent(loadSummary);
+	if (document.getElementById("userSummary") == null) {
+		document.getElementById("loader").style.display = "block";
+		document.getElementById("addJiraComponent").style.display = "none";
+		if(document.getElementById("userProfile")){
+			document.getElementById("body").removeChild(
+					document.getElementById("userProfile"));
+		}else if (document.getElementById("manageTeam")) {
+			document.getElementById("body").removeChild(
+					document.getElementById("manageTeam"));
+		}
+		// document.getElementById("logWork").style.display = "none";
+		document.getElementById("logWork").setAttribute("disabled", "");
+		var dashboard = document.getElementById("dashboard");
+		localStorage['dashboard'] = dashboard;
+		getSummaryComponent(loadSummary);
+	}
 }
 
 function getSummaryComponent(callback) {
@@ -33,8 +42,8 @@ function loadSummaryOnClick() {
 				+ days + " day(s).";
 		var canvas = document.createElement("canvas");
 		canvas.id = "userSummaryChart";
-		canvas.setAttribute("height","300");
-		canvas.setAttribute("width","800");
+		canvas.setAttribute("height", "300");
+		canvas.setAttribute("width", "800");
 		document.getElementById("summaryChart").appendChild(canvas);
 		fetchSummaryDetails(days, loadSummaryTable);
 		document.getElementById("noOfDays").value = "";
@@ -43,8 +52,10 @@ function loadSummaryOnClick() {
 	}
 }
 function loadSummary(summaryComponent) {
-	/*document.getElementById("body").removeChild(
-			document.getElementById("body").children[0]);*/
+	/*
+	 * document.getElementById("body").removeChild(
+	 * document.getElementById("body").children[0]);
+	 */
 	document.getElementById("dashboard").style.display = "none";
 	document.getElementById("body").appendChild(summaryComponent);
 	fetchSummaryDetails(7, loadSummaryTable);
@@ -204,7 +215,7 @@ function fetchGraphSummaryData(noOfDays, jiraSummaryDetailsList, callback) {
 
 function renderGraph(data) {
 	var labels = [];
-	for(var i = 0 ;i < data.labels.length;i++){
+	for (var i = 0; i < data.labels.length; i++) {
 		labels.push(new Date(data.labels[i]).toDateString());
 	}
 	data.labels = labels;
@@ -221,7 +232,7 @@ function renderGraph(data) {
 					stacked : true
 				} ]
 			},
-			tooltips :{
+			tooltips : {
 				position : 'nearest'
 			}
 		}

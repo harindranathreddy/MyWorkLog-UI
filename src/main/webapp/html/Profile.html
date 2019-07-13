@@ -1,0 +1,77 @@
+<div id="userProfile">
+	<div id="profileActions"></div>
+	<div id="userDetails">
+		<form>
+			<div class="form-group row">
+				<label for="userProfilePhoto" class="col-sm-2 col-form-label">Display
+					Picture</label>
+				<div class="col-sm-10">
+					<img src="" alt="Profile Photo" id="userProfilePhoto">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="userId" class="col-sm-2 col-form-label">Id</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control-plaintext" id="userId"
+						readonly />
+				</div>
+			</div>
+			<br />
+			<div class="form-group row">
+				<label for="userName" class="col-sm-2 col-form-label">Name</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="userName" />
+				</div>
+			</div>
+			<br />
+			<div class="form-group row">
+				<label for="userMailId" class="col-sm-2 col-form-label">Mail</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="userMailId" />
+				</div>
+			</div>
+			<br />
+			<div class="form-group row">
+				<label for="userTeam" class="col-sm-2 col-form-label">Team</label>
+				<div class="col-sm-10">
+					<select class="form-control" id="userTeam">
+						<option selected>No Team Selected</option>
+					</select> <small class="form-text text-muted"> Team can be updated
+						only once by you. Please, contact Manager/Team Lead to change
+						team. If team is never assigned use Edit Profile button to assign
+						team. </small> <small class="form-text text-danger"> Team name
+						should match with agile team name. Once assigned can't be edited
+						by you. So, please be carefull while assigning. </small>
+				</div>
+			</div>
+			<br />
+			<div class="form-group row">
+				<label for="userRole" class="col-sm-2 col-form-label">Role</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="userRole" /> <small
+						class="form-text text-muted"> Please, contact Manager/Team
+						Lead to change Role. </small>
+				</div>
+			</div>
+			<br />
+			<div class=" form-group row">
+				<label for="mailNotification" class="col-sm-2 col-form-label">Notify
+					Me</label>
+				<div class="col-sm-10">
+					<div class="custom-control custom-switch">
+						<input type="checkbox" class="custom-control-input"
+							id="mailNotification"> <label
+							class="custom-control-label" for="mailNotification"></label> <small
+							class="form-text text-muted"> Select to receive worklog
+							notifications. </small>
+					</div>
+				</div>
+			</div>
+			<button type="button" class="btn btn-outline-secondary"
+				id="editProfile" onClick="editProfileDetails()">Edit
+				Profile</button>
+			<button type="button" class="btn btn-outline-primary"
+				id="saveProfileChanges" onClick="saveProfileChanges()">Save Profile Changes</button>
+		</form>
+	</div>
+</div>

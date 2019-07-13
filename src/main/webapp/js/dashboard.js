@@ -1,9 +1,11 @@
 var userId = "";
+var userObj = "";
 
-function displayDetails(user, password) {
-	sessionStorage.setItem("user", user);
+function displayDetails(password, userObj) {
+	sessionStorage.setItem("user", userObj.userId);
 	sessionStorage.setItem("key", password);
-	userId = user;
+	userId = userObj.userId;
+	userObj = userObj;
 	/*
 	 * var now = new Date(); var minutes = 30; now.setTime(now.getTime() +
 	 * (minutes * 60 * 1000)); document.cookie = "user =
@@ -11,7 +13,7 @@ function displayDetails(user, password) {
 	 * "+password+";expires="+now.toString();
 	 */
 	updateProgressBar("10%");
-	modifyScreenContent(user);
+	modifyScreenContent(userObj);
 }
 
 function modifyScreenContent(user) {
@@ -39,14 +41,34 @@ function modifyScreenContent(user) {
 	summary.setAttribute("onClick","onSummaryLinkClick()");
 	summary.innerHTML = "Summary";
 	navBarLinks.appendChild(summary);
+	var profile = document.createElement("button");
+	profile.id = "profileLink";
+	profile.classList.add("btn");
+	profile.classList.add("btn-link");
+	profile.setAttribute("onClick","onProfileLinkClick()");
+	profile.innerHTML = "Profile";
+	navBarLinks.appendChild(profile);
+	if(user.role){
+		var manageteam = document.createElement("button");
+		manageteam.id = "manageTeamLink";
+		manageteam.classList.add("btn");
+		manageteam.classList.add("btn-link");
+		manageteam.setAttribute("onClick","onManageTeamLinkClick()");
+		manageteam.innerHTML = "Manage Team";
+		navBarLinks.appendChild(manageteam);
+	}
 	var userIdDisplay = document.createElement("span");
 	userIdDisplay.id = "userIdDisplay";
 	userIdDisplay.classList.add("navbar-text");
-	userIdDisplay.innerHTML = user;
+	if(user.name){
+		userIdDisplay.innerHTML = "<img id = 'userPhoto' src = "+ user.avatar +"> "+ user.name;
+	}else{
+		userIdDisplay.innerHTML =  user.userId;
+	}
 	document.getElementById("headerNavBar").appendChild(userIdDisplay);
 	document.getElementById("body").appendChild(dashboard);
 	updateProgressBar("20%");
-	fetchJiraDetails(user, loadJiraDetails);
+	fetchJiraDetails(user.userId, loadJiraDetails);
 }
 
 function fetchJiraDetails(user, callback) {
@@ -154,7 +176,7 @@ function addWorkLogComponent(workLogs,dates){
 			workLog.appendChild(date);
 			var workHours = document.createElement("input");
 			workHours.id = "workHours";
-			workHours.placeholder = "Work Hours";
+			workHours.placeholder = "Work Hours (Ex: 8h)";
 			workHours.classList.add("form-control");
 			workHours.classList.add("card-body");
 			workLog.appendChild(workHours);
@@ -185,7 +207,7 @@ function addWorkLogComponent(workLogs,dates){
 				workLog.appendChild(date);
 				var workHours = document.createElement("input");
 				workHours.id = "workHours";
-				workHours.placeholder = "Work Hours";
+				workHours.placeholder = "Work Hours (Ex: 8h)";
 				workHours.classList.add("form-control");
 				workHours.classList.add("card-body");
 				workLog.appendChild(workHours);
@@ -215,7 +237,7 @@ function addWorkLogComponent(workLogs,dates){
 					workLog.appendChild(date);
 					var workHours = document.createElement("input");
 					workHours.id = "workHours";
-					workHours.placeholder = "Work Hours";
+					workHours.placeholder = "Work Hours (Ex: 8h)";
 					workHours.classList.add("form-control");
 					workHours.classList.add("card-body");
 					workLog.appendChild(workHours);
@@ -424,9 +446,16 @@ function addWorkLogDay(jiraComponent){
 }
 
 function onMyJiraLinkClick(){
-	if(document.getElementById("userSummary"))
-	document.getElementById("body").removeChild(
-			document.getElementById("userSummary"));
+	if(document.getElementById("userSummary")){
+		document.getElementById("body").removeChild(
+				document.getElementById("userSummary"));
+	}else if(document.getElementById("userProfile")){
+		document.getElementById("body").removeChild(
+				document.getElementById("userProfile"));
+	}else if(document.getElementById("manageTeam")){
+		document.getElementById("body").removeChild(
+				document.getElementById("manageTeam"));
+	}
 	document.getElementById("dashboard").style.display = "block";
 	document.getElementById("addJiraComponent").removeAttribute("style");
 	document.getElementById("logWork").removeAttribute("disabled");

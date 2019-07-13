@@ -53,8 +53,8 @@
 	background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
-.modal-dialog{
-	max-width : 100%;
+.modal-dialog {
+	max-width: 100%;
 }
 /* Modal Content */
 .modal-content {
@@ -80,12 +80,27 @@
 	cursor: pointer;
 }
 
-#myJiraLink{
-	color : #ffffff;
+#myJiraLink {
+	color: #ffffff;
 	text-align: center;
 }
 
-#summaryLink{
-	color : #ffffff;
+#summaryLink {
+	color: #ffffff;
 	text-align: center;
+}
+
+#profileLink {
+	color: #ffffff;
+	text-align: center;
+}
+
+#manageTeamLink{
+	color: #ffffff;
+	text-align: center;
+}
+
+#userPhoto {
+	width: 22px !important;
+	height: 22px !important;
 }

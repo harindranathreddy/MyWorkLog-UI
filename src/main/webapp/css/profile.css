@@ -1,0 +1,28 @@
+#userProfile {
+	width: 80%;
+	margin-left: 10%;
+	margin-right: 10%;
+	padding-bottom: 15%;
+}
+
+#profileActions {
+	
+}
+
+#userDetails {
+	margin-top: 20px;
+}
+
+#userProfilePhoto {
+	height: 100px;
+}
+
+#saveProfileChanges {
+	display: none;
+}
+
+.col-form-label {
+	font-style: oblique;
+	font-weight: 500;
+	font-size: larger;
+}
