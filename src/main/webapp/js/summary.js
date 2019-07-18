@@ -8,6 +8,9 @@ function onSummaryLinkClick() {
 		}else if (document.getElementById("manageTeam")) {
 			document.getElementById("body").removeChild(
 					document.getElementById("manageTeam"));
+		}else if (document.getElementById("teamJiraDashboard")) {
+			document.getElementById("body").removeChild(
+					document.getElementById("teamJiraDashboard"));
 		}
 		// document.getElementById("logWork").style.display = "none";
 		document.getElementById("logWork").setAttribute("disabled", "");
@@ -52,10 +55,6 @@ function loadSummaryOnClick() {
 	}
 }
 function loadSummary(summaryComponent) {
-	/*
-	 * document.getElementById("body").removeChild(
-	 * document.getElementById("body").children[0]);
-	 */
 	document.getElementById("dashboard").style.display = "none";
 	document.getElementById("body").appendChild(summaryComponent);
 	fetchSummaryDetails(7, loadSummaryTable);

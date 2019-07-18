@@ -3,16 +3,17 @@
 		<div class="modal-content">
 			<div id="popupHeader" class="modal-header">
 				<h5 id="popupTitle" class="modal-title"></h5>
-				<button type="button" class="close" data-dismiss="modal" 
+				<button type="button" class="close" data-dismiss="modal"
 					aria-label="Close" onClick="closePopup()">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div id="popupBody" class="modal-body"></div>
 			<div id="popupFooter" class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal" onClick="closePopup()">Edit
-					WorkLog</button>
-				<button type="button" class="btn btn-primary" onClick="submitWorkHours()">Save WorkLog</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal"
+					onClick="closePopup()">Edit WorkLog</button>
+				<button type="button" class="btn btn-primary"
+					onClick="submitWorkHours()">Save WorkLog</button>
 			</div>
 		</div>
 	</div>
@@ -28,18 +29,110 @@
 </div>
 
 
-<div id = "manageTeam">
-<div id="addTeam">
-<h4>Add Team</h4>
-<form>
- <div class="form-row align-items-center">
-  <div class="col-auto addTeamInput">
-  	<input type="text" class="form-control" id="teamName" placeholder="Enter Team Name(Ex: d_byltesquad)">
-  </div>
-  <div class="col-auto addTeamButton">
-  <button type="button" class="btn btn-outline-primary" onClick="addTeam()">Add Team</button>
-  </div>
- </div>
-</form>
-</div>
+<div id="manageTeam">
+	<div id="addTeam">
+		<h4>Add Team</h4>
+		<form>
+			<div class="form-row align-items-center">
+				<div class="col-auto addTeamInput">
+					<input type="text" class="form-control" id="teamName"
+						placeholder="Enter Team Name(Ex: d_byltesquad)">
+				</div>
+				<div class="col-auto addTeamButton">
+					<button type="button" class="btn btn-outline-primary"
+						onClick="addTeam()">Add Team</button>
+				</div>
+				<small class="form-text text-danger"> Team name should match
+					with agile team name. Once created can't be edited. So, please
+					create very caution. </small>
+			</div>
+		</form>
+	</div>
+	<div id="updateUserDetailsForLeads">
+		<h4>Modify User Details</h4>
+		<form>
+			<div class="form-row align-items-center">
+				<div class="col-auto addTeamInput">
+					<input type="text" class="form-control" id="userIdByTLorManager"
+						placeholder="Enter User Id(Ex: HKXXXXXX)">
+				</div>
+				<div class="col-auto addTeamButton">
+					<button type="button" class="btn btn-outline-primary"
+						onClick="searchUserToModify()">Search User</button>
+				</div>
+			</div>
+		</form>
+		<div id="SearchedUserDetails">
+			<form>
+				<div class="form-group row">
+					<label for="userProfilePhoto" class="col-sm-2 col-form-label">Display
+						Picture</label>
+					<div class="col-sm-10">
+						<img src="" alt="https://jira2.cerner.com/secure/useravatar?avatarId=10122" id="userProfilePhoto">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="userId" class="col-sm-2 col-form-label">Id</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control-plaintext" id="userId"
+							readonly />
+					</div>
+				</div>
+				<br />
+				<div class="form-group row">
+					<label for="userName" class="col-sm-2 col-form-label">Name</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="userName" />
+					</div>
+				</div>
+				<br />
+				<div class="form-group row">
+					<label for="userMailId" class="col-sm-2 col-form-label">Mail</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="userMailId" />
+					</div>
+				</div>
+				<br />
+				<div class="form-group row">
+					<label for="userTeam" class="col-sm-2 col-form-label">Team</label>
+					<div class="col-sm-10">
+						<select class="form-control" id="userTeam">
+							<option selected>No Team Selected</option>
+						</select>
+					</div>
+				</div>
+				<br />
+				<div class="form-group row">
+					<label for="userRole" class="col-sm-2 col-form-label">Role</label>
+					<div class="col-sm-10">
+						<select class="form-control" id="userRole">
+							<option value="PROJECT_MANAGER">Project Manager</option>
+							<option value="TEAM_LEAD">Team Lead</option>
+							<option value="SOLUTION_DESIGNER">Solution Designer</option>
+							<option value="TEST_ANALYST">Test Analyst</option>
+							<option value="ENGINEER">Engineer</option>
+							<option value="ASSOCIATE">Associate</option>
+						</select>
+					</div>
+				</div>
+				<br />
+				<div class=" form-group row">
+					<label for="mailNotification" class="col-sm-2 col-form-label">Notify
+						Me</label>
+					<div class="col-sm-10">
+						<div class="custom-control custom-switch">
+							<input type="checkbox" class="custom-control-input"
+								id="mailNotification"> <label
+								class="custom-control-label" for="mailNotification"></label> <small
+								class="form-text text-muted"> Select to receive worklog
+								notifications. </small>
+						</div>
+					</div>
+				</div>
+				<button type="button" class="btn btn-outline-primary"
+					id="saveProfileChanges" onClick="saveProfileChangesByTLorManager()">Save
+					Profile Changes</button>
+			</form>
+		</div>
+	</div>
 </div>

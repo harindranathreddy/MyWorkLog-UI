@@ -17,8 +17,11 @@
 	height: 100px;
 }
 
-#saveProfileChanges {
+#editProfile{
 	display: none;
+}
+#saveProfileChanges {
+	display: block;
 }
 
 .col-form-label {

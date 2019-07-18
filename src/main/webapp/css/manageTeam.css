@@ -16,3 +16,7 @@
 .addTeamButton{
 	width: 20%;
 }
+
+#SearchedUserDetails{
+	display : none;
+}

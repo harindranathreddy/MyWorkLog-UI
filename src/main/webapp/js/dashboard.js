@@ -4,6 +4,7 @@ var userObj = "";
 function displayDetails(password, userObj) {
 	sessionStorage.setItem("user", userObj.userId);
 	sessionStorage.setItem("key", password);
+	sessionStorage.setItem("team", userObj.team);
 	userId = userObj.userId;
 	userObj = userObj;
 	/*
@@ -34,6 +35,13 @@ function modifyScreenContent(user) {
 	myJira.setAttribute("onClick","onMyJiraLinkClick()");
 	myJira.innerHTML = "My Jira";
 	navBarLinks.appendChild(myJira);
+	var myTeamJira = document.createElement("button");
+	myTeamJira.id = "myTeamJiraLink";
+	myTeamJira.classList.add("btn");
+	myTeamJira.classList.add("btn-link");
+	myTeamJira.setAttribute("onClick","onMyTeamJiraLinkClick()");
+	myTeamJira.innerHTML = "My Team Jira";
+	navBarLinks.appendChild(myTeamJira);
 	var summary = document.createElement("button");
 	summary.id = "summaryLink";
 	summary.classList.add("btn");
@@ -192,7 +200,7 @@ function addWorkLogComponent(workLogs,dates){
 			workLogComment.classList.add("col");
 			workLogComment.classList.add("alert");
 			workLogComment.classList.add("alert-warning");
-			workLogComment.innerHTML = "Work is never logged in this card.If you want to log work hours for today, you can log in worklog component available.";
+			workLogComment.innerHTML = "No work is logged in this card.";
 			workLogs.appendChild(workLogComment);
 		}else{
 			var datesArray = dates.split(",");
@@ -223,7 +231,7 @@ function addWorkLogComponent(workLogs,dates){
 				workLogComment.classList.add("col");
 				workLogComment.classList.add("alert");
 				workLogComment.classList.add("alert-warning");
-				workLogComment.innerHTML = "Work is not progress from "+ datesArray.length + " day(s). Please review the card in jira application. If you want to log work hours for today, you can log in worklog component available.";
+				workLogComment.innerHTML = "Work is not progress from "+ datesArray.length + " day(s). Please review the card in jira application.";
 				workLogs.appendChild(workLogComment);
 			}else{
 				for (var i = 0; i < datesArray.length; i++) {
@@ -267,8 +275,14 @@ function logWork() {
 	logs.userName = sessionStorage.getItem("user");
 	logs.password = sessionStorage.getItem("key");
 	logs.worklogs = [];
-	var dashboard = document.getElementById("dashboard");
-	var jiras = dashboard.childNodes;
+	var jiras = [];
+	if(document.getElementById("dashboard").style.display === "block"){
+		var dashboard = document.getElementById("dashboard");
+		jiras = dashboard.childNodes;
+	}else if(document.getElementById("teamJiraDashboard")){
+		var dashboard = document.getElementById("teamJiraDashboard");
+		jiras = dashboard.childNodes;
+	}
 	updateProgressBar("10%");
 	for (var i = 0; i < jiras.length; i++) {
 		var workLog = getWorkLog(jiras[i]);
@@ -428,17 +442,7 @@ function addWorkLogDay(jiraComponent){
 			jiraComponent.childNodes[2].removeChild(jiraComponent.childNodes[2].lastChild);
 		}
 		jiraComponent.childNodes[2].appendChild(response.getElementById("workLog"));
-		var currentdate = new Date()
-		var month = parseInt(currentdate.getMonth()+1);
-		if(month < 10){
-			month = "0" + month;
-		}
-		var date = parseInt(currentdate.getDate());
-		if(date < 10){
-			date = "0" + date;
-		}
-		var maxdate = currentdate.getFullYear() +"-"+ month + "-"+date;
-		jiraComponent.getElementsByClassName("workLog")[jiraComponent.getElementsByClassName("workLog").length-1].firstElementChild.setAttribute("max",maxdate+"T23:59");
+		jiraComponent.getElementsByClassName("workLog")[jiraComponent.getElementsByClassName("workLog").length-1].firstElementChild.setAttribute("max",new Date());
 	};
 	xhr.open("GET", "./html/WorkLog.html", true);
 	xhr.responseType = "document";
@@ -455,8 +459,12 @@ function onMyJiraLinkClick(){
 	}else if(document.getElementById("manageTeam")){
 		document.getElementById("body").removeChild(
 				document.getElementById("manageTeam"));
+	}else if (document.getElementById("teamJiraDashboard")) {
+		document.getElementById("body").removeChild(
+				document.getElementById("teamJiraDashboard"));
 	}
 	document.getElementById("dashboard").style.display = "block";
 	document.getElementById("addJiraComponent").removeAttribute("style");
 	document.getElementById("logWork").removeAttribute("disabled");
 }
+

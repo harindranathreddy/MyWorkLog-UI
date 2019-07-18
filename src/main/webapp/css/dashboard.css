@@ -32,6 +32,10 @@
 	padding-bottom: 15%;
 }
 
+#teamJiraDashboard{
+	padding-bottom: 15%;
+}
+
 .addWorkLog {
 	width: 20px;
 	height: 20px;
@@ -96,6 +100,11 @@
 }
 
 #manageTeamLink{
+	color: #ffffff;
+	text-align: center;
+}
+
+#myTeamJiraLink{
 	color: #ffffff;
 	text-align: center;
 }

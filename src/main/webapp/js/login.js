@@ -67,7 +67,7 @@ function clearScreen() {
 }
 
 document.addEventListener("keyup", function(event) {
-	if (event.keyCode === 13) {
+	if (event.keyCode === 13 && document.getElementById("signInBtn").style.display === "block") {
 		document.getElementById("signInBtn").click();
 	}
 });
