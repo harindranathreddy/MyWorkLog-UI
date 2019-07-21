@@ -57,6 +57,13 @@ function modifyScreenContent(user) {
 	profile.innerHTML = "Profile";
 	navBarLinks.appendChild(profile);
 	if(user.role){
+		var teamSummary = document.createElement("button");
+		teamSummary.id = "teamSummaryLink";
+		teamSummary.classList.add("btn");
+		teamSummary.classList.add("btn-link");
+		teamSummary.setAttribute("onClick","onTeamSummaryLinkClick()");
+		teamSummary.innerHTML = "Team Summary";
+		navBarLinks.appendChild(teamSummary);
 		var manageteam = document.createElement("button");
 		manageteam.id = "manageTeamLink";
 		manageteam.classList.add("btn");
@@ -462,6 +469,9 @@ function onMyJiraLinkClick(){
 	}else if (document.getElementById("teamJiraDashboard")) {
 		document.getElementById("body").removeChild(
 				document.getElementById("teamJiraDashboard"));
+	}else if (document.getElementById("teamSummary")) {
+		document.getElementById("body").removeChild(
+				document.getElementById("teamSummary"));
 	}
 	document.getElementById("dashboard").style.display = "block";
 	document.getElementById("addJiraComponent").removeAttribute("style");

@@ -9,9 +9,12 @@ function onManageTeamLinkClick() {
 		} else if (document.getElementById("userProfile")) {
 			document.getElementById("body").removeChild(
 					document.getElementById("userProfile"));
-		}else if (document.getElementById("teamJiraDashboard")) {
+		} else if (document.getElementById("teamJiraDashboard")) {
 			document.getElementById("body").removeChild(
 					document.getElementById("teamJiraDashboard"));
+		} else if (document.getElementById("teamSummary")) {
+			document.getElementById("body").removeChild(
+					document.getElementById("teamSummary"));
 		}
 		getManageTeamComponent();
 	}
@@ -88,7 +91,7 @@ function searchUserToModify() {
 					document.getElementById("userIdByTLorManager").value = "";
 					document.getElementById("SearchedUserDetails").style.display = "block";
 					loadUserDetailsForLeads(response.responseData);
-				}else if (response.responseCode === "U09") {
+				} else if (response.responseCode === "U09") {
 					updateProgressBar("100%");
 					document.getElementById("userIdByTLorManager").value = "";
 					displayInfo(response.responseMessage);
@@ -121,9 +124,9 @@ function searchUserToModify() {
 
 function loadUserDetailsForLeads(userDetails) {
 	document.getElementById("userId").value = userDetails.userId;
-	if(userDetails.avatar){
+	if (userDetails.avatar) {
 		document.getElementById("userProfilePhoto").src = userDetails.avatar;
-	}else{
+	} else {
 		document.getElementById("userProfilePhoto").src = "https://jira2.cerner.com/secure/useravatar?avatarId=10122";
 	}
 	if (userDetails.name) {
@@ -142,7 +145,7 @@ function loadUserDetailsForLeads(userDetails) {
 		document.getElementById("userMailId").classList
 				.add("form-control-plaintext");
 		document.getElementById("userMailId").readOnly = true;
-	}else{
+	} else {
 		document.getElementById("userMailId").value = "";
 		document.getElementById("userMailId").classList
 				.remove("form-control-plaintext");
@@ -228,13 +231,16 @@ function saveProfileChangesByTLorManager() {
 	modifiedUserDetails.role = document.getElementById("userRole").value;
 	modifiedUserDetails.notification = document
 			.getElementById("mailNotification").checked;
-	var roleIndex = document.getElementById("userTeam").selectedIndex;
-	if (roleIndex != 0) {
-		var userTeam = document.getElementById("userTeam")[roleIndex];
+	var teamIndex = document.getElementById("userTeam").selectedIndex;
+	if (teamIndex != 0) {
+		var userTeam = document.getElementById("userTeam")[teamIndex];
 		modifiedUserDetails.team = userTeam.text;
 		modifiedUserDetails.teamId = userTeam.value;
+		if (modifiedUserDetails.userId == sessionStorage.getItem("user")) {
+			sessionStorage.setItem("team", modifiedUserDetails.team);
+		}
 	} else {
-		var userTeam = document.getElementById("userTeam")[roleIndex];
+		var userTeam = document.getElementById("userTeam")[teamIndex];
 		modifiedUserDetails.team = userTeam.text;
 	}
 	var xhr = new XMLHttpRequest();
@@ -245,6 +251,7 @@ function saveProfileChangesByTLorManager() {
 			if (response && response.responseCode === 'U07') {
 				displaySuccessMessage(response.responseMessage);
 				updateProgressBar("100%");
+				clearSearchedUserDetails();
 			} else {
 				updateProgressBarWithError("100%");
 				displayError(response.responseMessage);
@@ -269,4 +276,97 @@ function saveProfileChangesByTLorManager() {
 	xhr.setRequestHeader("Content-Type", "application/json");
 	updateProgressBar("60%");
 	xhr.send(JSON.stringify(modifiedUserDetails));
+}
+
+function clearSearchedUserDetails() {
+	document.getElementById("SearchedUserDetails").style.display = "none";
+	document.getElementById("userProfilePhoto").src = "";
+	document.getElementById("userId").value = "";
+	document.getElementById("userName").value = "";
+	document.getElementById("userMailId").value = "";
+	document.getElementById("userRole").value = "";
+	document.getElementById("userTeam").selectedIndex = 0;
+}
+var noOfDays;
+var associateId;
+function loadUserSummaryForPM() {
+	noOfDays = document.getElementById("daysForUserSummaryByPM").value;
+	associateId = document.getElementById("userIdForSummaryByPM").value;
+	if (noOfDays > 0 && associateId) {
+		if (document.getElementById("summaryTableDiv"))
+			document.getElementById("userSummaryDetailsForPM").removeChild(
+					document.getElementById("summaryTableDiv"));
+		if (document.getElementById("summaryChart"))
+			document.getElementById("userSummaryDetailsForPM").removeChild(
+					document.getElementById("summaryChart"));
+		getSummaryComponent(loadUserSummaryDivForPM);
+	} else {
+		displayWarning("Please enter no of days and Associate Id for Summary.");
+	}
+}
+
+function loadUserSummaryDivForPM(userSummaryDiv) {
+	var summaryTableDiv = userSummaryDiv.children.summaryTableDiv;
+	var summaryChartDiv = userSummaryDiv.children.summaryChart;
+	document.getElementById("userSummaryDetailsForPM").appendChild(
+			summaryTableDiv);
+	document.getElementById("userSummaryDetailsForPM").appendChild(
+			summaryChartDiv);
+	document.getElementById("userSummaryDetailsForPM").style.display = "block";
+	fetchUserSummaryDetailsForPM();
+}
+
+function fetchUserSummaryDetailsForPM() {
+	try {
+		document.getElementsByClassName("progress-bar")[0].style.width = "10%";
+		var data = "userId=" + associateId + "&noOfDays=" + noOfDays;
+		var xhr = new XMLHttpRequest();
+		xhr.onload = function() {
+			var response = JSON.parse(this.responseText);
+			if (200 === this.status) {
+				updateProgressBar("25%");
+				if (response.responseCode == "US01") {
+					var jiraSummaryDetailsList = response.responseData;
+					loadSummaryTable(jiraSummaryDetailsList);
+					loadGraphSummary(noOfDays, jiraSummaryDetailsList);
+				} else if (response.responseCode == "US03") {
+					updateProgressBarWithError("100%");
+					displayWarning(response.responseMessage);
+					clearProgressBar();
+				} else {
+					updateProgressBarWithError("100%");
+					displayError(response.responseMessage);
+					clearProgressBar();
+				}
+			} else {
+				updateProgressBarWithError("100%");
+				displayError(response.responseMessage);
+				clearProgressBar();
+			}
+		};
+		xhr.onerror = function(e) {
+			updateProgressBarWithError("100%");
+			displayError("Unknown Error Occured. Server response not received. Please contact Administrator.");
+			clearProgressBar();
+		};
+		xhr.open("GET", "http://" + window.location.hostname
+				+ ":8090/taskmanagement/details/jiraDetailsForSummary?" + data,
+				true);
+		xhr.send();
+	} catch (err) {
+		updateProgressBarWithError("100%");
+		displayError("Failed to load. Please contact the administrator.");
+		$("#loader").fadeOut("slow");
+	}
+}
+
+function clearUserSummaryForPM() {
+	if (document.getElementById("summaryTableDiv"))
+		document.getElementById("userSummaryDetailsForPM").removeChild(
+				document.getElementById("summaryTableDiv"));
+	if (document.getElementById("summaryChart"))
+		document.getElementById("userSummaryDetailsForPM").removeChild(
+				document.getElementById("summaryChart"));
+	document.getElementById("daysForUserSummaryByPM").valu = "";
+	document.getElementById("userIdForSummaryByPM").value = "";
 }

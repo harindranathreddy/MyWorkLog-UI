@@ -13,6 +13,9 @@ function onProfileLinkClick() {
 		}else if (document.getElementById("teamJiraDashboard")) {
 			document.getElementById("body").removeChild(
 					document.getElementById("teamJiraDashboard"));
+		}else if (document.getElementById("teamSummary")) {
+			document.getElementById("body").removeChild(
+					document.getElementById("teamSummary"));
 		}
 		getProfileComponent(loadProfile);
 	}

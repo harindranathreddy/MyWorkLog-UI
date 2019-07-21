@@ -58,3 +58,11 @@
 #summaryDaysHeading{
 	text-align : center;
 }
+
+#userDetailsForSummary{
+	text-align : center;
+}
+
+#teamSummary{
+	padding-bottom: 15%;
+}

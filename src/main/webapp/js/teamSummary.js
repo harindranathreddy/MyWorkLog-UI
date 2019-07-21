@@ -1,5 +1,6 @@
-function onSummaryLinkClick() {
-	if (document.getElementById("userSummary") == null) {
+function onTeamSummaryLinkClick() {
+	if (document.getElementById("teamSummary") == null) {
+		updateProgressBar("10%");
 		document.getElementById("loader").style.display = "block";
 		document.getElementById("addJiraComponent").style.display = "none";
 		if (document.getElementById("userProfile")) {
@@ -11,76 +12,82 @@ function onSummaryLinkClick() {
 		} else if (document.getElementById("teamJiraDashboard")) {
 			document.getElementById("body").removeChild(
 					document.getElementById("teamJiraDashboard"));
-		} else if (document.getElementById("teamSummary")) {
+		} else if (document.getElementById("userSummary")) {
 			document.getElementById("body").removeChild(
-					document.getElementById("teamSummary"));
+					document.getElementById("userSummary"));
 		}
-		// document.getElementById("logWork").style.display = "none";
 		document.getElementById("logWork").setAttribute("disabled", "");
 		var dashboard = document.getElementById("dashboard");
+		document.getElementById("dashboard").style.display = "none";
 		localStorage['dashboard'] = dashboard;
-		getSummaryComponent(loadSummary);
+		var teamSummary = document.createElement("div");
+		teamSummary.id = "teamSummary";
+		document.getElementById("body").appendChild(teamSummary);
+		getTeamSummaryComponent(loadTeamSummary);
 	}
 }
-
-function getSummaryComponent(callback) {
+var userSummaryDiv = {};
+function getTeamSummaryComponent(callback) {
 	var xhr = new XMLHttpRequest();
 	xhr.onload = function() {
 		var response = this.responseXML;
 		if (response) {
-			callback(response.getElementById("userSummary"));
+			callback(response.getElementById("teamSummaryComponents"));
 		} else {
 			displayError("Failed to load. Please contact the administrator and try page refresh(F5)");
 		}
 	};
-	xhr.open("GET", "./html/Summary.html", true);
+	xhr.open("GET", "./html/Templates.html", true);
 	xhr.responseType = "document";
 	xhr.send();
 }
-function loadSummaryOnClick() {
+
+function loadTeamSummary(teamSummaryComponents) {
+	updateProgressBar("20%");
+	document.getElementById("teamSummary").appendChild(
+			teamSummaryComponents.children.summaryConfig);
+	document.getElementById("teamSummary").appendChild(
+			teamSummaryComponents.children.summaryDaysHeading);
+	document.getElementById("teamSummary").appendChild(
+			teamSummaryComponents.children.teamMembersSummaryComponents);
+	userSummaryDiv = teamSummaryComponents.children.userSummaryDiv;
+	fetchTeamMemeberDetails(7, fetchTeamSummaryDetails);
+}
+
+function loadTeamSummaryOnClick() {
 	var days = document.getElementById("noOfDays").value;
 	if (days != "" && days >= 0) {
-		document.getElementById("loader").style.display = "block";
 		updateProgressBar("10%");
+		document.getElementById("loader").style.display = "block";
 		document.getElementById("summaryTableBody").innerHTML = "";
-		document.getElementById("userSummaryChart").remove();
 		document.getElementById("summaryDaysHeading").innerHTML = "Summary for "
 				+ days + " day(s).";
-		var canvas = document.createElement("canvas");
-		canvas.id = "userSummaryChart";
-		canvas.setAttribute("height", "300");
-		canvas.setAttribute("width", "800");
-		document.getElementById("summaryChart").appendChild(canvas);
-		fetchSummaryDetails(days, loadSummaryTable);
+		document.getElementById("teamMembersSummaryComponents").remove();
+		var var_teamMembersSummaryComponents = document
+				.createElement("teamMembersSummaryComponents");
+		var_teamMembersSummaryComponents.id = "teamMembersSummaryComponents";
+		document.getElementById("teamSummary").appendChild(
+				var_teamMembersSummaryComponents);
+		fetchTeamMemeberDetails(days, fetchTeamSummaryDetails);
 		document.getElementById("noOfDays").value = "";
 	} else {
 		displayWarning("Please, Enter no of days greater than or equal to 0.");
 	}
 }
-function loadSummary(summaryComponent) {
-	document.getElementById("dashboard").style.display = "none";
-	document.getElementById("body").appendChild(summaryComponent);
-	fetchSummaryDetails(7, loadSummaryTable);
-}
 
-function fetchSummaryDetails(noOfDays, callback) {
+function fetchTeamMemeberDetails(days, callback) {
 	try {
 		document.getElementsByClassName("progress-bar")[0].style.width = "10%";
-		var data = "userId=" + sessionStorage.getItem("user") + "&noOfDays="
-				+ noOfDays;
+		var data = "userId=" + sessionStorage.getItem("user") + "&teamName="
+				+ sessionStorage.getItem("team");
 		var xhr = new XMLHttpRequest();
 		xhr.onload = function() {
 			var response = JSON.parse(this.responseText);
 			if (200 === this.status) {
-				updateProgressBar("25%");
-				if (response.responseCode == "US01") {
-					var jiraSummaryDetailsList = response.responseData;
-					callback(jiraSummaryDetailsList);
-					loadGraphSummary(noOfDays, jiraSummaryDetailsList);
-				} else if (response.responseCode == "US03") {
-					updateProgressBarWithError("100%");
-					displayWarning(response.responseMessage);
-					clearProgressBar();
+				updateProgressBar("30%");
+				if (response.responseCode == "TM01") {
+					var teamMemebers = response.responseData;
+					callback(teamMemebers, days);
 				} else {
 					updateProgressBarWithError("100%");
 					displayError(response.responseMessage);
@@ -98,19 +105,93 @@ function fetchSummaryDetails(noOfDays, callback) {
 			clearProgressBar();
 		};
 		xhr.open("GET", "http://" + window.location.hostname
-				+ ":8090/taskmanagement/details/jiraDetailsForSummary?" + data,
+				+ ":8090/taskmanagement/userDetails/getTeamMembers?" + data,
 				true);
 		xhr.send();
 	} catch (err) {
 		updateProgressBarWithError("100%");
 		displayError("Failed to load. Please contact the administrator.");
-		$("#loader").fadeOut("slow");
+		clearProgressBar();
 	}
 }
-function loadSummaryTable(jiraSummaryDetailsList) {
+
+function fetchTeamSummaryDetails(teamMembers, days) {
 	updateProgressBar("50%");
-	var table = document.getElementById("summaryTable");
-	var tbody = table.getElementsByTagName("tbody").summaryTableBody;
+	for (var i = 0; i < teamMembers.length; i++) {
+		try {
+			document.getElementsByClassName("progress-bar")[0].style.width = "10%";
+			var data = "userId=" + teamMembers[i].userId + "&noOfDays=" + days;
+			var xhr = new XMLHttpRequest();
+			xhr.onload = function() {
+				var response = JSON.parse(this.responseText);
+				if (200 === this.status) {
+					updateProgressBar("25%");
+					if (response.responseCode == "US01") {
+						var jiraSummaryDetailsList = response.responseData;
+						var teamSummaryDiv = document
+								.getElementById("teamMembersSummaryComponents");
+						var tempUserSummaryDiv = userSummaryDiv.cloneNode(true);
+						tempUserSummaryDiv.id += "_" + teamMembers[i].userId;
+						var userDetailsForSummary = tempUserSummaryDiv.children.userDetailsForSummary;
+						userDetailsForSummary.innerHTML = "Summary of <strong>"
+								+ teamMembers[i].name + "</strong>";
+						teamSummaryDiv.appendChild(tempUserSummaryDiv);
+						var userSummaryTable = tempUserSummaryDiv.children.summaryTableDiv;
+						var userSummaryGraph = tempUserSummaryDiv.children.summaryChart;
+						loadUserSummaryTable(jiraSummaryDetailsList,
+								userSummaryTable);
+						loadUserSummaryGraph(days, jiraSummaryDetailsList,
+								userSummaryGraph);
+					} else if (response.responseCode == "US03") {
+						updateProgressBarWithError("100%");
+						displayWarning(response.responseMessage);
+						clearProgressBar();
+					} else {
+						updateProgressBarWithError("100%");
+						displayError(response.responseMessage);
+						clearProgressBar();
+					}
+				} else if (400 === this.status) {
+					var teamSummaryDiv = document
+							.getElementById("teamMembersSummaryComponents");
+					var tempUserSummaryDiv = userSummaryDiv.cloneNode(true);
+					tempUserSummaryDiv.id += "_" + teamMembers[i].userId;
+					var userDetailsForSummary = tempUserSummaryDiv.children.userDetailsForSummary;
+					userDetailsForSummary.innerHTML = "<strong>"
+							+ teamMembers[i].name
+							+ "</strong> didn't log any work in requested time frame."
+					teamSummaryDiv.appendChild(tempUserSummaryDiv);
+				} else {
+					var teamSummaryDiv = document
+							.getElementById("teamMembersSummaryComponents");
+					var tempUserSummaryDiv = userSummaryDiv.cloneNode(true);
+					tempUserSummaryDiv.id += "_" + teamMembers[i].userId;
+					var userDetailsForSummary = tempUserSummaryDiv.children.userDetailsForSummary;
+					userDetailsForSummary.innerHTML = "Failed to fetch details of <strong>"
+							+ teamMembers[i].name + "</<strong>>";
+					teamSummaryDiv.appendChild(tempUserSummaryDiv);
+				}
+			};
+			xhr.onerror = function(e) {
+				updateProgressBarWithError("100%");
+				displayError("Unknown Error Occured. Server response not received. Please contact Administrator.");
+				clearProgressBarWithOutFooter();
+			};
+			xhr.open("GET", "http://" + window.location.hostname
+					+ ":8090/taskmanagement/details/jiraDetailsForSummary?"
+					+ data, false);
+			xhr.send();
+		} catch (err) {
+			updateProgressBarWithError("100%");
+			displayError("Failed to load. Please contact the administrator.");
+		}
+	}
+	updateProgressBar("100%");
+	clearProgressBar();
+}
+
+function loadUserSummaryTable(jiraSummaryDetailsList, userSummaryTable) {
+	var tbody = userSummaryTable.getElementsByTagName("tbody").summaryTableBody;
 	if (jiraSummaryDetailsList) {
 		for (var i = 0; i < jiraSummaryDetailsList.length; i++) {
 			var jiraRow = tbody.insertRow(-1);
@@ -164,21 +245,21 @@ function loadSummaryTable(jiraSummaryDetailsList) {
 			}
 		}
 	}
-	updateProgressBar("100%");
-	displaySuccessMessage("Summary Loaded Succesuffly");
-	clearProgressBar();
-
 }
 
-function loadGraphSummary(noOfDays, jiraSummaryDetailsList) {
-	if (noOfDays <= 365) {
-		fetchGraphSummaryData(noOfDays, jiraSummaryDetailsList, renderGraph);
-	} else {
-		fetchGraphSummaryData(noOfDays, jiraSummaryDetailsList, renderLineGraph);
+function loadUserSummaryGraph(noOfDays, jiraSummaryDetailsList,
+		userSummaryGraph) {
+	if (noOfDays <= 365){
+		fetchTeamMemberGraphSummaryData(noOfDays, jiraSummaryDetailsList,
+				userSummaryGraph, renderTeamMemberBarGraph);
+	}else{
+		fetchTeamMemberGraphSummaryData(noOfDays, jiraSummaryDetailsList,
+				userSummaryGraph, renderTeamMemberLineGraph)
 	}
 }
 
-function fetchGraphSummaryData(noOfDays, jiraSummaryDetailsList, callback) {
+function fetchTeamMemberGraphSummaryData(noOfDays, jiraSummaryDetailsList,
+		userSummaryGraph, callback) {
 	try {
 		var data = {
 			noOfDays : noOfDays,
@@ -191,7 +272,7 @@ function fetchGraphSummaryData(noOfDays, jiraSummaryDetailsList, callback) {
 				updateProgressBar("100%");
 				var response = JSON.parse(this.responseText);
 				if (response && response.responseCode === 'UGD01') {
-					callback(response.responseData);
+					callback(response.responseData, userSummaryGraph);
 				} else {
 					displayError(response.responseMessage);
 				}
@@ -205,7 +286,7 @@ function fetchGraphSummaryData(noOfDays, jiraSummaryDetailsList, callback) {
 		xhr.onerror = function(e) {
 			updateProgressBarWithError("100%");
 			displayError("Unknown Error Occured. Server response not received. Please contact Administrator.");
-			clearProgressBar();
+			clearProgressBarWithOutFooter();
 		};
 		xhr.open("POST", "http://" + window.location.hostname
 				+ ":8090/taskmanagement/details/getUserSummaryGraphData", true);
@@ -219,13 +300,15 @@ function fetchGraphSummaryData(noOfDays, jiraSummaryDetailsList, callback) {
 	}
 }
 
-function renderGraph(data) {
+function renderTeamMemberBarGraph(data, userSummaryGraphDiv) {
 	var labels = [];
 	for (var i = 0; i < data.labels.length; i++) {
 		labels.push(new Date(data.labels[i]).toDateString());
 	}
 	data.labels = labels;
-	var ctx = document.getElementById("userSummaryChart");
+	var ctx = userSummaryGraphDiv.children.teamMemberSummaryChart;
+	ctx.height= 300;
+	ctx.width = 800;
 	var mixedChart = new Chart(ctx, {
 		type : 'bar',
 		data : data,
@@ -245,13 +328,15 @@ function renderGraph(data) {
 	});
 }
 
-function renderLineGraph(data) {
+function renderTeamMemberLineGraph(data, userSummaryGraphDiv) {
 	var labels = [];
 	for (var i = 0; i < data.labels.length; i++) {
 		labels.push(new Date(data.labels[i]).toDateString());
 	}
 	data.labels = labels;
-	var ctx = document.getElementById("userSummaryChart");
+	var ctx = userSummaryGraphDiv.children.teamMemberSummaryChart;
+	ctx.height= 300;
+	ctx.width = 800;
 	var mixedChart = new Chart(ctx, {
 		type : 'line',
 		data : data,

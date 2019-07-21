@@ -10,6 +10,9 @@ function onMyTeamJiraLinkClick() {
 	} else if (document.getElementById("manageTeam")) {
 		document.getElementById("body").removeChild(
 				document.getElementById("manageTeam"));
+	}else if (document.getElementById("teamSummary")) {
+		document.getElementById("body").removeChild(
+				document.getElementById("teamSummary"));
 	}
 	document.getElementById("addJiraComponent").style.display = "none";
 	document.getElementById("dashboard").style.display = "none";
@@ -37,12 +40,12 @@ function loadTeamJiras(teamName) {
 				}else{
 					updateProgressBarWithError("100%");
 					displayError(response.responseMessage);
-					$("#loader").fadeOut("slow");
+					clearProgressBar();
 				}
 			} else {
 				updateProgressBarWithError("100%")
 				displayError(response.responseMessage);
-				$("#loader").fadeOut("slow");
+				clearProgressBar();
 			}
 		};
 		xhr.open("GET", "http://" + window.location.hostname
@@ -51,7 +54,7 @@ function loadTeamJiras(teamName) {
 		xhr.send();
 	} else {
 		updateProgressBar("100%")
-		$("#loader").fadeOut("slow");
+		clearProgressBar();
 		displayError("No Team Assigned");
 	}
 }
