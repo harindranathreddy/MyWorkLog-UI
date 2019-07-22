@@ -230,7 +230,9 @@ function renderGraph(data) {
 		type : 'bar',
 		data : data,
 		options : {
-			scales : {
+			legend: {
+		        display: false
+		    },scales : {
 				xAxes : [ {
 					stacked : true
 				} ],
@@ -256,7 +258,9 @@ function renderLineGraph(data) {
 		type : 'line',
 		data : data,
 		options : {
-			scales : {
+			legend: {
+		        display: false
+		    },scales : {
 				xAxes : [ {
 					stacked : true
 				} ],

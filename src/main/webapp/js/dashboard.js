@@ -323,6 +323,9 @@ function getWorkLog(jira) {
 				+ (startDate.getMonth() + 1) + "-" + startDate.getDate()
 				+ "T09:00:00.000-0500";
 				workLog.timeSpent = jira.lastElementChild.childNodes[i].childNodes[1].value;
+				if(!isNaN(workLog.timeSpent)){
+					workLog.timeSpent += "h";
+				}
 				workLog.comment = jira.lastElementChild.childNodes[i].childNodes[2].value;
 			}else{
 				workLog.started = jira.lastElementChild.childNodes[i].childNodes[0].nextElementSibling.value+"T09:00:00.000-0500";

@@ -100,6 +100,7 @@ function submitWorkHours() {
 			displayError("Error occured. Please try after sometime");
 		}
 		clearProgressBar();
+		$("#loader").fadeOut("slow");
 	};
 	xhr.onerror = function(e) {
 		updateProgressBarWithError("100%");
