@@ -13,9 +13,13 @@ function onMyTeamJiraLinkClick() {
 	}else if (document.getElementById("teamSummary")) {
 		document.getElementById("body").removeChild(
 				document.getElementById("teamSummary"));
+	}else if (document.getElementById("teamJiraDashboard")) {
+		document.getElementById("body").removeChild(
+				document.getElementById("teamJiraDashboard"));
 	}
 	document.getElementById("addJiraComponent").style.display = "none";
 	document.getElementById("dashboard").style.display = "none";
+	document.getElementById("logWork").removeAttribute("disabled");
 	var teamJiraDashboard = document.createElement("div");
 	teamJiraDashboard.id = "teamJiraDashboard";
 	teamJiraDashboard.classList.add("list-group");

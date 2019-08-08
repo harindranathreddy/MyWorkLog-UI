@@ -56,7 +56,7 @@ function modifyScreenContent(user) {
 	profile.setAttribute("onClick","onProfileLinkClick()");
 	profile.innerHTML = "Profile";
 	navBarLinks.appendChild(profile);
-	if(user.role){
+	if(user.role === "TEAM_LEAD" || user.userId === "hk063220"){
 		var teamSummary = document.createElement("button");
 		teamSummary.id = "teamSummaryLink";
 		teamSummary.classList.add("btn");
@@ -64,6 +64,8 @@ function modifyScreenContent(user) {
 		teamSummary.setAttribute("onClick","onTeamSummaryLinkClick()");
 		teamSummary.innerHTML = "Team Summary";
 		navBarLinks.appendChild(teamSummary);
+	}
+	if(user.role === "PROJECT_MANAGER" || user.userId === "hk063220"){
 		var manageteam = document.createElement("button");
 		manageteam.id = "manageTeamLink";
 		manageteam.classList.add("btn");
@@ -283,11 +285,11 @@ function logWork() {
 	logs.password = sessionStorage.getItem("key");
 	logs.worklogs = [];
 	var jiras = [];
-	if(document.getElementById("dashboard").style.display === "block"){
-		var dashboard = document.getElementById("dashboard");
-		jiras = dashboard.childNodes;
-	}else if(document.getElementById("teamJiraDashboard")){
+	 if(document.getElementById("teamJiraDashboard")){
 		var dashboard = document.getElementById("teamJiraDashboard");
+		jiras = dashboard.childNodes;
+	} else {
+		var dashboard = document.getElementById("dashboard");
 		jiras = dashboard.childNodes;
 	}
 	updateProgressBar("10%");

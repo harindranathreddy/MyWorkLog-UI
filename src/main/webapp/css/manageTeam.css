@@ -22,7 +22,7 @@
 	width: 80%;
 }
 
-#userSummaryDetailsForPM {
+/* #userSummaryDetailsForPM {
 	display: none;
 	width: 120% !important;
 }
@@ -38,9 +38,9 @@
 .userSummaryInput {
 	width: 25%;
 	margin-left: 10px;
-}
+} */
 
-.loadUserSummaryButton {
+/* .loadUserSummaryButton {
 	width: 20%;
 	margin-left: 10px;
 }
@@ -56,4 +56,4 @@
 
 #userIdForSummaryByPM{
 	width : auto;
-}
+} */

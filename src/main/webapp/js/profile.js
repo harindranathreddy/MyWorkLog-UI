@@ -1,5 +1,4 @@
 function onProfileLinkClick() {
-	if (document.getElementById("userProfile") == null) {
 		updateProgressBar("10%");
 		document.getElementById("loader").style.display = "block";
 		document.getElementById("addJiraComponent").style.display = "none";
@@ -16,9 +15,11 @@ function onProfileLinkClick() {
 		}else if (document.getElementById("teamSummary")) {
 			document.getElementById("body").removeChild(
 					document.getElementById("teamSummary"));
+		}else if (document.getElementById("userProfile")) {
+			document.getElementById("body").removeChild(
+					document.getElementById("userProfile"));
 		}
 		getProfileComponent(loadProfile);
-	}
 }
 
 function getProfileComponent(callback) {
@@ -200,6 +201,7 @@ function saveProfileChangesFun() {
 				.add("form-control-plaintext");
 		document.getElementById("userTeam").readOnly = true;
 		document.getElementById("userTeam").disabled = true;
+		sessionStorage.setItem("team", modifiedUserDetails.team);
 	}else{
 		var userTeam = document.getElementById("userTeam")[roleIndex];
 		modifiedUserDetails.team = userTeam.text;

@@ -87,17 +87,21 @@ function submitWorkHours() {
 				updateProgressBar("100%")
 				displaySuccessMessage(response.responseMessage);
 				removeLoggedDates();
+				$("#loader").fadeOut("slow");
 			} else {
 				updateProgressBarWithError("100%");
 				displayError(response.responseMessage);
+				$("#loader").fadeOut("slow");
 			}
 		} else if (400 === this.status) {
 			var response = JSON.parse(this.responseText);
 			updateProgressBarWithError("100%");
 			displayError(response.responseMessage);
+			$("#loader").fadeOut("slow");
 		} else {
 			updateProgressBarWithError("100%");
 			displayError("Error occured. Please try after sometime");
+			$("#loader").fadeOut("slow");
 		}
 		clearProgressBar();
 		$("#loader").fadeOut("slow");

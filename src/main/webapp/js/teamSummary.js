@@ -1,5 +1,4 @@
 function onTeamSummaryLinkClick() {
-	if (document.getElementById("teamSummary") == null) {
 		updateProgressBar("10%");
 		document.getElementById("loader").style.display = "block";
 		document.getElementById("addJiraComponent").style.display = "none";
@@ -15,6 +14,9 @@ function onTeamSummaryLinkClick() {
 		} else if (document.getElementById("userSummary")) {
 			document.getElementById("body").removeChild(
 					document.getElementById("userSummary"));
+		}else if (document.getElementById("teamSummary")) {
+			document.getElementById("body").removeChild(
+					document.getElementById("teamSummary"));
 		}
 		document.getElementById("logWork").setAttribute("disabled", "");
 		var dashboard = document.getElementById("dashboard");
@@ -24,7 +26,6 @@ function onTeamSummaryLinkClick() {
 		teamSummary.id = "teamSummary";
 		document.getElementById("body").appendChild(teamSummary);
 		getTeamSummaryComponent(loadTeamSummary);
-	}
 }
 var userSummaryDiv = {};
 function getTeamSummaryComponent(callback) {

@@ -142,8 +142,9 @@
 		<form>
 			<div class="form-row align-items-center">
 				<div class="col-auto daysInput">
-					<input type="number" class="form-control" id="daysForUserSummaryByPM"
-						placeholder="Enter No of Days(Ex: 7)" min = 0>
+					<input type="number" class="form-control"
+						id="daysForUserSummaryByPM" placeholder="Enter No of Days(Ex: 7)"
+						min=1>
 				</div>
 				<div class="col-auto userSummaryInput">
 					<input type="text" class="form-control" id="userIdForSummaryByPM"
@@ -159,9 +160,33 @@
 				</div>
 			</div>
 		</form>
-		<div id="userSummaryDetailsForPM">
-			
-		</div>
+		<div id="userSummaryDetailsForPM"></div>
+	</div>
+	<div id="teamSummaryComponentForPM">
+		<h4>Team Summary</h4>
+		<form>
+			<div class="form-row align-items-center">
+			<div class="col-auto daysInput">
+					<input type="number" class="form-control"
+						id="daysForTeamSummaryByPM" placeholder="Enter No of Days(Ex: 7)"
+						min=1>
+				</div>
+				<div class="col-auto teamInput">
+					<select class="form-control" id="teamNamesForSummary">
+						<option selected>Select Team</option>
+					</select>
+				</div>
+				<div class="col-auto loadTeamSummaryButtonForPM">
+					<button type="button" class="btn btn-outline-primary"
+						onClick="loadTeamSummaryButtonForPM()">Load Team Summary</button>
+				</div>
+				<div class="col-auto clearTeamSummaryButton">
+					<button type="button" class="btn btn-outline-secondary"
+						onClick="clearTeamSummaryForPM()">Clear User Summary</button>
+				</div>
+			</div>
+		</form>
+		<div id="teamSummaryDetailsForPM"></div>
 	</div>
 </div>
 
@@ -192,6 +217,6 @@
 		<div id="summaryChart">
 			<canvas id="teamMemberSummaryChart" width="0" height="0"> </canvas>
 		</div>
-		<hr/>
+		<hr />
 	</div>
 </div>

@@ -1,5 +1,4 @@
 function onManageTeamLinkClick() {
-	if (document.getElementById("manageTeam") == null) {
 		document.getElementById("loader").style.display = "block";
 		document.getElementById("addJiraComponent").style.display = "none";
 		document.getElementById("logWork").setAttribute("disabled", "");
@@ -15,9 +14,11 @@ function onManageTeamLinkClick() {
 		} else if (document.getElementById("teamSummary")) {
 			document.getElementById("body").removeChild(
 					document.getElementById("teamSummary"));
+		}else if (document.getElementById("manageTeam")) {
+			document.getElementById("body").removeChild(
+					document.getElementById("manageTeam"));
 		}
 		getManageTeamComponent();
-	}
 }
 
 function getManageTeamComponent() {
@@ -37,6 +38,7 @@ function displayComponents(manageTeamComponent) {
 	var manageTeam = manageTeamComponent.getElementById("manageTeam");
 	document.getElementById("dashboard").style.display = "none";
 	document.getElementById("body").appendChild(manageTeam);
+	addAllTeamsForTeamSummary();
 	$("#loader").fadeOut("slow");
 }
 
@@ -293,6 +295,7 @@ function loadUserSummaryForPM() {
 	noOfDays = document.getElementById("daysForUserSummaryByPM").value;
 	associateId = document.getElementById("userIdForSummaryByPM").value;
 	if (noOfDays > 0 && associateId) {
+		document.getElementById("loader").style.display = "block";
 		if (document.getElementById("summaryTableDiv"))
 			document.getElementById("userSummaryDetailsForPM").removeChild(
 					document.getElementById("summaryTableDiv"));
@@ -367,6 +370,200 @@ function clearUserSummaryForPM() {
 	if (document.getElementById("summaryChart"))
 		document.getElementById("userSummaryDetailsForPM").removeChild(
 				document.getElementById("summaryChart"));
-	document.getElementById("daysForUserSummaryByPM").valu = "";
+	document.getElementById("daysForUserSummaryByPM").value = "";
 	document.getElementById("userIdForSummaryByPM").value = "";
+}
+
+function addAllTeamsForTeamSummary() {
+	var xhr = new XMLHttpRequest();
+	xhr.onload = function() {
+		updateProgressBar("60%");
+		var response = JSON.parse(this.responseText);
+		if (200 === this.status) {
+			if (response.responseCode == "T04") {
+				updateProgressBar("70%");
+				var teamsData = response.responseData;
+				var teams = document.getElementById("teamNamesForSummary");
+				for (var i = 0; i < teamsData.length; i++) {
+					var option = document.createElement("option");
+					option.text = teamsData[i].name;
+					option.value = teamsData[i].id;
+					teams.add(option);
+				}
+				updateProgressBar("100%");
+				clearProgressBar();
+				$("#loader").fadeOut("slow");
+			} else if (response.responseCode == "T05") {
+				updateProgressBarWithError("100%");
+				displayWarning(response.responseMessage);
+				clearProgressBar();
+				$("#loader").fadeOut("slow");
+			} else {
+				updateProgressBarWithError("100%");
+				displayWarning(response.responseMessage);
+				clearProgressBar();
+				$("#loader").fadeOut("slow");
+			}
+		} else {
+			updateProgressBarWithError("100%");
+			displayError(response.responseMessage);
+			clearProgressBar();
+			$("#loader").fadeOut("slow");
+		}
+	};
+	xhr.onError = function() {
+		displayWarning("Failed to create the team. Please try after sometime.");
+	}
+	xhr.open("GET", "http://" + window.location.hostname
+			+ ":8090/taskmanagement/userDetails/getAllteams", true);
+	xhr.send();
+}
+
+var noOfDaysForTeam;
+var teamSelected;
+function loadTeamSummaryButtonForPM(){
+	noOfDaysForTeam = document.getElementById("daysForTeamSummaryByPM").value;
+	var teamSelectedIndex = document.getElementById("teamNamesForSummary").selectedIndex;
+	teamSelected = document.getElementById("teamNamesForSummary")[teamSelectedIndex].text;
+	if (noOfDaysForTeam > 0 && teamSelectedIndex> 0 && teamSelected) {
+		document.getElementById("loader").style.display = "block";
+		getTeamSummaryComponent(loadTeamSummaryComponentForPM);
+	} else {
+		displayWarning("Please enter no of days and select Team name for Summary.");
+	}
+}
+
+var userSummaryDivForPM = {}
+function loadTeamSummaryComponentForPM(teamSummaryComponents){
+		updateProgressBar("20%");
+		if (document.getElementById("teamMembersSummaryComponents"))
+			document.getElementById("teamSummaryDetailsForPM").removeChild(
+					document.getElementById("teamMembersSummaryComponents"));
+		document.getElementById("teamSummaryDetailsForPM").appendChild(
+				teamSummaryComponents.children.teamMembersSummaryComponents);
+		userSummaryDivForPM = teamSummaryComponents.children.userSummaryDiv;
+		fetchTeamMemeberDetailsForPM(7, fetchTeamSummaryDetailsForPM);
+}
+
+function fetchTeamMemeberDetailsForPM(days, callback) {
+	try {
+		document.getElementsByClassName("progress-bar")[0].style.width = "10%";
+		var data = "userId=" + sessionStorage.getItem("user") + "&teamName="
+				+ teamSelected;
+		var xhr = new XMLHttpRequest();
+		xhr.onload = function() {
+			var response = JSON.parse(this.responseText);
+			if (200 === this.status) {
+				updateProgressBar("30%");
+				if (response.responseCode == "TM01") {
+					var teamMemebers = response.responseData;
+					callback(teamMemebers, days);
+				} else {
+					updateProgressBarWithError("100%");
+					displayError(response.responseMessage);
+					clearProgressBar();
+				}
+			} else {
+				updateProgressBarWithError("100%");
+				displayError(response.responseMessage);
+				clearProgressBar();
+			}
+		};
+		xhr.onerror = function(e) {
+			updateProgressBarWithError("100%");
+			displayError("Unknown Error Occured. Server response not received. Please contact Administrator.");
+			clearProgressBar();
+		};
+		xhr.open("GET", "http://" + window.location.hostname
+				+ ":8090/taskmanagement/userDetails/getTeamMembers?" + data,
+				true);
+		xhr.send();
+	} catch (err) {
+		updateProgressBarWithError("100%");
+		displayError("Failed to load. Please contact the administrator.");
+		clearProgressBar();
+	}
+}
+
+function fetchTeamSummaryDetailsForPM(teamMembers, days){
+	updateProgressBar("50%");
+	for (var i = 0; i < teamMembers.length; i++) {
+		try {
+			document.getElementsByClassName("progress-bar")[0].style.width = "10%";
+			var data = "userId=" + teamMembers[i].userId + "&noOfDays=" + days;
+			var xhr = new XMLHttpRequest();
+			xhr.onload = function() {
+				var response = JSON.parse(this.responseText);
+				if (200 === this.status) {
+					updateProgressBar("25%");
+					if (response.responseCode == "US01") {
+						var jiraSummaryDetailsList = response.responseData;
+						var teamSummaryDiv = document
+								.getElementById("teamMembersSummaryComponents");
+						var tempUserSummaryDiv = userSummaryDivForPM.cloneNode(true);
+						tempUserSummaryDiv.id += "_" + teamMembers[i].userId;
+						var userDetailsForSummary = tempUserSummaryDiv.children.userDetailsForSummary;
+						userDetailsForSummary.innerHTML = "Summary of <strong>"
+								+ teamMembers[i].name + "</strong>";
+						teamSummaryDiv.appendChild(tempUserSummaryDiv);
+						var userSummaryTable = tempUserSummaryDiv.children.summaryTableDiv;
+						var userSummaryGraph = tempUserSummaryDiv.children.summaryChart;
+						loadUserSummaryTable(jiraSummaryDetailsList,
+								userSummaryTable);
+						loadUserSummaryGraph(days, jiraSummaryDetailsList,
+								userSummaryGraph);
+					} else if (response.responseCode == "US03") {
+						updateProgressBarWithError("100%");
+						displayWarning(response.responseMessage);
+						clearProgressBar();
+					} else {
+						updateProgressBarWithError("100%");
+						displayError(response.responseMessage);
+						clearProgressBar();
+					}
+				} else if (400 === this.status) {
+					var teamSummaryDiv = document
+							.getElementById("teamMembersSummaryComponents");
+					var tempUserSummaryDiv = userSummaryDivForPM.cloneNode(true);
+					tempUserSummaryDiv.id += "_" + teamMembers[i].userId;
+					var userDetailsForSummary = tempUserSummaryDiv.children.userDetailsForSummary;
+					userDetailsForSummary.innerHTML = "<strong>"
+							+ teamMembers[i].name
+							+ "</strong> didn't log any work in requested time frame."
+					teamSummaryDiv.appendChild(tempUserSummaryDiv);
+				} else {
+					var teamSummaryDiv = document
+							.getElementById("teamMembersSummaryComponents");
+					var tempUserSummaryDiv = userSummaryDivForPM.cloneNode(true);
+					tempUserSummaryDiv.id += "_" + teamMembers[i].userId;
+					var userDetailsForSummary = tempUserSummaryDiv.children.userDetailsForSummary;
+					userDetailsForSummary.innerHTML = "Failed to fetch details of <strong>"
+							+ teamMembers[i].name + "</<strong>>";
+					teamSummaryDiv.appendChild(tempUserSummaryDiv);
+				}
+			};
+			xhr.onerror = function(e) {
+				updateProgressBarWithError("100%");
+				displayError("Unknown Error Occured. Server response not received. Please contact Administrator.");
+				clearProgressBarWithOutFooter();
+			};
+			xhr.open("GET", "http://" + window.location.hostname
+					+ ":8090/taskmanagement/details/jiraDetailsForSummary?"
+					+ data, false);
+			xhr.send();
+		} catch (err) {
+			updateProgressBarWithError("100%");
+			displayError("Failed to load. Please contact the administrator.");
+		}
+	}
+	updateProgressBar("100%");
+	clearProgressBar();
+}
+
+function clearTeamSummaryForPM() {
+	if (document.getElementById("teamMembersSummaryComponents"))
+		document.getElementById("teamSummaryDetailsForPM").removeChild(
+				document.getElementById("teamMembersSummaryComponents"));
+	document.getElementById("daysForTeamSummaryByPM").value = "";
+	document.getElementById("teamNamesForSummary").selectedIndex = 0;
 }
